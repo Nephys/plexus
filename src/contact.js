@@ -13,9 +13,7 @@ class Contact {
 
         this.id = options.id || this.generate_id();
 
-        this.clock = new VectorClock({
-            id: this.id
-        });
+        this.clock = new VectorClock();
     }
 
     generate_id() {

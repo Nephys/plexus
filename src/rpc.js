@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const Contact = require("./contact");
 const Message = require("./message");
 
-const PACKET = {
+const PACKETS = {
     REQUEST: 0x9000,
     ACKNOWLEDGE: 0x9001,
 };
@@ -51,13 +51,13 @@ class RPC extends EventEmitter {
     
             const type = bytes.readUInt16BE(0);
             switch (type) {
-                case PACKET.REQUEST:
+                case PACKETS.REQUEST:
                     //  Request
                     this.on_request(contact, bytes.slice(2));
     
                     break;
                 
-                case PACKET.ACKNOWLEDGE:
+                case PACKETS.ACKNOWLEDGE:
                     //  Acknowledge
                     this.on_acknowledge(contact, bytes.slice(2));
     
@@ -75,7 +75,7 @@ class RPC extends EventEmitter {
     send_request(contact, id) {
         //  Type
         const type_bytes = Buffer.allocUnsafe(2);
-        type_bytes.writeUInt16BE(PACKET.REQUEST);
+        type_bytes.writeUInt16BE(PACKETS.REQUEST);
 
         //  Value
         const value_bytes = Buffer.from(id);
@@ -90,7 +90,7 @@ class RPC extends EventEmitter {
     send_acknowledge(contact, id) {
         //  Type
         const type_bytes = Buffer.allocUnsafe(2);
-        type_bytes.writeUInt16BE(PACKET.ACKNOWLEDGE);
+        type_bytes.writeUInt16BE(PACKETS.ACKNOWLEDGE);
 
         //  Value
         const value_bytes = Buffer.from(id);

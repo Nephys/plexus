@@ -28,6 +28,7 @@ class Node extends EventEmitter {
 
         //  RPC Message handler
         this.bind_rpc_handlers();
+        // this.self.clock.update(this.self.id);
     }
 
     bind_rpc_handlers() {
@@ -41,12 +42,19 @@ class Node extends EventEmitter {
 
     on_ping(params, contact) {
         console.log(`received PING from ${contact.name} with id ${params.id}`);
+        
+        contact.id = params.id;
+        this.self.clock.update(contact.id);
         this.rpc.send_message(new Message({method: "pong", params: {id: this.self.id}}).serialize(), contact);
+        
         console.log(`sent PONG to ${contact.name} with id ${this.self.id}`);
     }
 
     on_pong(params, contact) {
         console.log(`received PONG from ${contact.name} with id ${params.id}`);
+
+        contact.id = params.id;
+        this.self.clock.update(contact.id);
     }
 
     async connect(contact) {
@@ -55,7 +63,7 @@ class Node extends EventEmitter {
         this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), contact);
         this.router.update_contact(contact);
         
-        this.self.clock.update();
+        // this.self.clock.update();
         this.emit("connect", contact);
     }
 }
