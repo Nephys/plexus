@@ -7,12 +7,12 @@ a.rpc.on("ready", () => {
     b.rpc.on("ready", async() => {
         a.connect(new Plexus.Contact({port: 4545}));
 
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        console.log(a.self.clock.time);
-        console.log(b.self.clock.time);
+        // await new Promise((resolve) => setTimeout(resolve, 5000));
+        // console.log(a.self.clock.time);
+        // console.log(b.self.clock.time);
         // const util = require("util");
         // console.log(util.inspect(a.self.clock.time, {showHidden: true, colors: true}));
-        process.exit(0);
+        // process.exit(0);
     });
 });
 

@@ -32,8 +32,14 @@ class Node extends EventEmitter {
     }
 
     bind_rpc_handlers() {
-        this.rpc.on("PING", this.on_ping.bind(this));
-        this.rpc.on("PONG", this.on_pong.bind(this));
+        let handlers = [
+            {"PING": this.on_ping},
+            {"PONG": this.on_pong}
+        ];
+
+        for (let i = 0; i < handlers.length; i++) {
+            this.rpc.on(Object.keys(handlers[i])[0], Object.values(handlers[i])[0].bind(this));
+        }
 
         this.rpc.on("ready", () => {
             console.log(`node listening on ${this.self.name}`);
