@@ -28,7 +28,6 @@ class Node extends EventEmitter {
 
         //  RPC Message handler
         this.bind_rpc_handlers();
-        // this.self.clock.update(this.self.id);
     }
 
     bind_rpc_handlers() {
