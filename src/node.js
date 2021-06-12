@@ -45,31 +45,42 @@ class Node extends EventEmitter {
         });
     }
 
-    on_ping(params, contact) {
-        console.log(`received PING from ${contact.name} with id ${params.id}`);
+    on_ping(params, {host, port}) {
+        let contact = new Contact({
+            host: host,
+            port: port,
+            id: params.id
+        });
+
+        console.log(`received PING from ${contact.name} with id ${contact.id}`);
         
-        contact.id = params.id;
         this.self.clock.update(contact.id);
-        this.rpc.send_message(new Message({method: "pong", params: {id: this.self.id}}).serialize(), contact);
+        this.rpc.send_message(new Message({method: "pong", params: {id: this.self.id}}).serialize(), {host, port});
         
         console.log(`sent PONG to ${contact.name} with id ${this.self.id}`);
     }
 
-    on_pong(params, contact) {
-        console.log(`received PONG from ${contact.name} with id ${params.id}`);
+    on_pong(params, {host, port}) {
+        let contact = new Contact({
+            host: host,
+            port: port,
+            id: params.id
+        });
+
+        console.log(`received PONG from ${contact.name} with id ${contact.id}`);
 
         contact.id = params.id;
         this.self.clock.update(contact.id);
     }
 
-    async connect(contact) {
+    async connect({host, port}) {
         // this.rpc.send_message(JSON.stringify({type:"connect"}), contact);
 
-        this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), contact);
-        this.router.update_contact(contact);
+        this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
+        // this.router.update_contact(contact);
         
         // this.self.clock.update();
-        this.emit("connect", contact);
+        // this.emit("connect", contact);
     }
 }
 
