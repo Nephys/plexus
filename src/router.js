@@ -77,12 +77,35 @@ class Router {
 
         let bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
         if(bucket.has_contact(contact)) {
-            bucket.to_tail(contact);
+            this.to_tail(contact, bucket);
         } else if(bucket.size < this.peers) {
-            bucket.to_head(contact);
+            this.to_head(contact, bucket);
         } else {
-            bucket.ping_head(contact);
+            this.ping_head(contact, bucket);
         }
+    }
+
+    to_head(contact, bucket) {
+        //  Move to the start of the contact list
+        bucket.add_contact(contact);
+    }
+
+    to_tail(contact, bucket) {
+        //  Move to the end of the contact list
+        bucket.remove_contact(contact);
+        bucket.add_contact(contact);
+    }
+
+    ping_head(contact, bucket) {
+        //  Replace the contact at head with the new contact if it does not respond
+        let head = bucket.get_contact(0);
+        let ping = new Message({method: "ping", params: {id: this.self.id}});
+
+        let handshake = this.rpc.send_message(ping.serialize(), {host: head.host, port: head.port});
+        handshake.on("timeout", () => {
+            this.remove_contact(head);
+            this.add_contact(contact);
+        });
     }
 
     get_contacts_near(buffer, limit, sender_contact) {

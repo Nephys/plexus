@@ -39,7 +39,11 @@ node.rpc.on("ready", () => {
                         timestamp: new Date().getTime()
                     }
                 });
-                node.rpc.send_message(message.serialize(), remote);
+                node.rpc.send_message(message.serialize(), remote).on("timeout", () => {
+                    remote = null;
+                    console.log("lost connectio to remote peer");
+                    console.log("please enter the <IP:PORT> of the remote peer");
+                });
             } catch (error) {
                 stdout.write(`[ERROR]: ${error.message}\n`);
             }

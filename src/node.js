@@ -56,6 +56,8 @@ class Node extends EventEmitter {
         
         this.self.clock.update(contact.id);
         this.rpc.send_message(new Message({method: "pong", params: {id: this.self.id}}).serialize(), {host, port});
+        this.router.update_contact(contact);
+        this.emit("PING", params, {host, port});
         
         console.log(`sent PONG to ${contact.name} with id ${this.self.id}`);
     }
@@ -68,17 +70,20 @@ class Node extends EventEmitter {
         });
 
         console.log(`received PONG from ${contact.name} with id ${contact.id}`);
+        this.router.update_contact(contact);
+        this.emit("PONG", params, {host, port});
 
-        contact.id = params.id;
         this.self.clock.update(contact.id);
     }
 
     connect({host, port}) {
-        return this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
-        // this.router.update_contact(contact);
-        
-        // this.self.clock.update();
-        // this.emit("connect", contact);
+        let handshake = this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
+        this.self.clock.update(this.self.id);
+        handshake.on("connected", () => {
+            this.emit("connected", {host, port});
+        });
+
+        return handshake;
     }
 }
 

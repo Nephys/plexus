@@ -5,10 +5,13 @@ a.rpc.on("ready", () => {
     let b = new Plexus.Node({contact: new Plexus.Contact({port: 4545})});
 
     b.rpc.on("ready", async () => {
-        a.connect({host: "127.0.0.1", port: 4545}).on("connected", async () => {
-            a.rpc.send_message(new Plexus.Message({result: "DEBUG_MESSAGE"}).serialize(), {host: "127.0.0.1", port: 4545});
-            // await new Promise((resolve) => setTimeout(resolve, 1000));
-            // process.exit(0);
+        a.connect({host: "127.0.0.1", port: 4545});
+        a.on("PONG", async (params, {host, port}) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // const util = require("util");
+            // a.rpc.send_message(new Plexus.Message({result: "DEBUG_MESSAGE"}).serialize(), {host: "127.0.0.1", port: 4545});
+            // console.log(util.inspect(a.router.buckets, {showHidden: true, colors: true}));
+            process.exit(0);
         });
     });
 

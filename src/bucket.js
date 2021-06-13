@@ -44,22 +44,6 @@ class Bucket {
             return c.id;
         }).includes(contact.id);
     }
-
-    to_head(contact) {
-        //  Move to the start of the contact list
-        this.add_contact(contact);
-    }
-
-    to_tail(contact) {
-        //  Move to the end of the contact list
-        this.remove_contact(contact);
-        this.add_contact(contact);
-    }
-
-    ping_head(contact) {
-        // let head = this.get_contact(0);
-        // let ping = new Message({method: "PING", params: {}});
-    }
 }
 
 module.exports = Bucket;
