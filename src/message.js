@@ -11,7 +11,6 @@ class Message {
 
         }else if(this.is_response(spec)) {
 
-            // this.result = Object.assign({}, spec.result);
             this.result = spec.result;
 
             if(spec.error) {
@@ -36,7 +35,6 @@ class Message {
 
     is_response(parsed) {
         return !!((parsed.result != null) || parsed.error);
-        // return !!(parsed.id && (parsed.result || parsed.error));
     }
 }
 

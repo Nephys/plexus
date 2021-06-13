@@ -9,7 +9,7 @@ const PACKETS = {
     ACKNOWLEDGE: 0x9001,
 };
 
-const pending_calls = new Map();
+const pending_handshakes = new Map();
 
 class RPC extends EventEmitter {
     constructor(options = {}) {
@@ -20,66 +20,51 @@ class RPC extends EventEmitter {
         this.socket = dgram.createSocket("udp4");
         
         //  Socket Error
-        this.socket.on("error", this.error_handler());
+        this.socket.on("error", this.error_handler.bind(this));
 
         //  Socket Message
-        this.socket.on("message", this.message_handler());
+        this.socket.on("message", this.message_handler.bind(this));
 
         this.socket.on("listening", () => {
-            // this.socket.addMembership("239.255.255.250");
             this.emit("ready");
         });
         
+        //  Start listening on the socket
         this.socket.bind(this.port);
-
-        this.on("acknowledge", (id) => {
-            if(pending_calls.has(id)) {
-                let { emitter, interval } = pending_calls.get(id);
-
-                clearInterval(interval);
-                emitter.emit("connected");
-
-                pending_calls.delete(id);
-            }
-        });
     }
 
     create_id() {
         return Buffer.from(crypto.randomBytes(16)).toString("hex");
     }
 
-    error_handler() {
-        return (error) => {
-            console.log(error.message);
-        };
+    error_handler(error) {
+        console.log(error.message);
     }
 
-    message_handler() {
-        return (bytes, rinfo) => {
-            let host = rinfo.address;
-            let port = rinfo.port;
-    
-            const type = bytes.readUInt16BE(0);
-            switch (type) {
-                case PACKETS.REQUEST:
-                    //  Request
-                    this.on_request({host, port}, bytes.slice(2));
-    
-                    break;
-                
-                case PACKETS.ACKNOWLEDGE:
-                    //  Acknowledge
-                    this.on_acknowledge({host, port}, bytes.slice(2));
-    
-                    break;
+    message_handler(bytes, rinfo) {
+        let host = rinfo.address;
+        let port = rinfo.port;
+
+        const type = bytes.readUInt16BE(0);
+        switch (type) {
+            case PACKETS.REQUEST:
+                //  Request
+                this.on_request({host, port}, bytes.slice(2));
+
+                break;
             
-                default:
-                    //  Message
-                    this.on_message({host, port}, bytes);
-    
-                    break;
-            }
-        };
+            case PACKETS.ACKNOWLEDGE:
+                //  Acknowledge
+                this.on_acknowledge({host, port}, bytes.slice(2));
+
+                break;
+        
+            default:
+                //  Message
+                this.on_message({host, port}, bytes);
+
+                break;
+        }
     }
 
     send_request({host, port}, id) {
@@ -116,7 +101,6 @@ class RPC extends EventEmitter {
         const id = bytes.toString();
         console.log(`receiving request packet with token ${id} from ${host}:${port}`);
 
-        this.emit("request", id);
         this.send_acknowledge({host, port}, id);
     }
 
@@ -124,9 +108,18 @@ class RPC extends EventEmitter {
         const id = bytes.toString();
         console.log(`receiving acknowledge packet with token ${id} from ${host}:${port}`);
 
-        this.emit("acknowledge", id);
+        // Handle pending handshakes if any
+        if(pending_handshakes.has(id)) {
+            let { emitter, negotiator } = pending_handshakes.get(id);
+
+            clearInterval(negotiator);
+            emitter.emit("connected");
+
+            pending_handshakes.delete(id);
+        }
     }
 
+    //  Message parsing
     on_message({host, port}, bytes) {
         try {
             let spec = JSON.parse(bytes.toString());
@@ -148,36 +141,41 @@ class RPC extends EventEmitter {
         }
     }
 
-    call({host, port}, attempts = 60, timeout = 1000) {
+    //  Handshake negotiation
+    handshake({host, port}, attempts = 60, timeout = 1000) {
         let emitter = new EventEmitter();
         let id = this.create_id();
 
-        let interval = setInterval(() => {
+        //  Ping the remote until it responds or the handshake times out
+        console.log(`negotiating handshake with ${host}:${port}`);
+        let negotiator = setInterval(() => {
             if(attempts > 0) {
                 attempts--;
                 this.send_request({host, port}, id);
             } else {
                 console.log(`connection to ${host}:${port} timed out`);
                 
-                clearInterval(interval);
+                clearInterval(negotiator);
                 emitter.emit("timeout");
 
-                pending_calls.delete(id);
+                pending_handshakes.delete(id);
             }
             
         }, timeout);
 
-        pending_calls.set(id, {emitter, interval});
+        pending_handshakes.set(id, {emitter, negotiator});
         return emitter;
     }
 
     send_message(message, {host, port}) {
-        let caller = this.call({host, port});
+        //  Initiate a handshake with the remote
+        let handshake = this.handshake({host, port});
 
-        caller.on("connected", () => {
+        //  Only send the message if the remote is responding
+        handshake.on("connected", () => {
             this.socket.send(message, port, host);
         });
-        return caller;
+        return handshake;
     }
 }
 

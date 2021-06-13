@@ -1,6 +1,3 @@
-// const Constants = require("./constants");
-const Message = require("./message");
-
 class Bucket {
     constructor() {
         this.contacts = [];
@@ -15,9 +12,6 @@ class Bucket {
     }
 
     get_contact(index) {
-        // index = index < 0 ? 0 : index;
-        // index = index > Constants.B ? Constants.B : index;
-        
         return this.contacts[index] || null;
     }
 
@@ -25,8 +19,6 @@ class Bucket {
         return this.contacts.map((c) => {
             return c.id;
         }).indexOf(contact.id);
-        
-        // return this.contacts.indexOf(contact);
     }
 
     add_contact(contact) {
@@ -51,15 +43,6 @@ class Bucket {
         return this.contacts.map((c) => {
             return c.id;
         }).includes(contact.id);
-
-        //return this.contacts.includes(contact);
-
-        // for (let i = 0; i < this.get_size(); i++) {
-        //     if (this._contacts[i].id === contact.id) {
-        //         return true;
-        //     }
-        // }
-        // return false;
     }
 
     to_head(contact) {
@@ -74,9 +57,8 @@ class Bucket {
     }
 
     ping_head(contact) {
-        let head = this.get_contact(0);
-        let ping = new Message({method: "PING", params: {}});
-        
+        // let head = this.get_contact(0);
+        // let ping = new Message({method: "PING", params: {}});
     }
 }
 

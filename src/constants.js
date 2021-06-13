@@ -1,3 +1,4 @@
+//  Should never be used, only here for reference, will be removed later
 module.exports = {
 
   ALPHA: 3,

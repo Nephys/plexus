@@ -41,7 +41,7 @@ class Node extends EventEmitter {
         }
 
         this.rpc.on("ready", () => {
-            console.log(`node listening on ${this.self.name}`);
+            console.log(`node ${this.self.id} listening on ${this.self.name}`);
         });
     }
 
@@ -73,10 +73,8 @@ class Node extends EventEmitter {
         this.self.clock.update(contact.id);
     }
 
-    async connect({host, port}) {
-        // this.rpc.send_message(JSON.stringify({type:"connect"}), contact);
-
-        this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
+    connect({host, port}) {
+        return this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
         // this.router.update_contact(contact);
         
         // this.self.clock.update();

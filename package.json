@@ -10,6 +10,10 @@
   "engines": {
     "node": ">=15.12.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nephys/plexus.git"
+  },
   "author": "Nephys",
   "license": "MIT"
 }
