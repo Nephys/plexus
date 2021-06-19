@@ -1,3 +1,4 @@
+const util = require("util");
 const os = require("os");
 const Plexus = require("../index");
 
@@ -14,6 +15,10 @@ let node = new Plexus.Node({contact: new Plexus.Contact({port})});
 node.rpc.on("ready", () => {
     node.rpc.on("DATA", (params, {host, port}) => {
         console.log(`[${params.sender}]: ${params.data}`);
+    });
+
+    node.rpc.on("message", (message, {host, port}) => {
+        console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
     });
     
     console.log("please enter the <IP:PORT> of the remote peer");

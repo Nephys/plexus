@@ -33,7 +33,8 @@ class Node extends EventEmitter {
     bind_rpc_handlers() {
         let handlers = [
             {"PING": this.on_ping},
-            {"PONG": this.on_pong}
+            {"PONG": this.on_pong},
+            {"FIND": this.on_find},
         ];
 
         for (let i = 0; i < handlers.length; i++) {
@@ -74,6 +75,18 @@ class Node extends EventEmitter {
         this.emit("PONG", params, {host, port});
 
         this.self.clock.update(contact.id);
+    }
+
+    on_find(params, {host, port}) {
+        let key = params.key;
+        let limit = this.router.peers;
+        let sender = new Contact({
+            host: host,
+            port: port,
+            id: params.id
+        });
+
+        let near = this.router.get_contacts_near(key, limit, sender);
     }
 
     connect({host, port}) {

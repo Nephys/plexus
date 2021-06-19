@@ -24,7 +24,7 @@ class Bucket {
     add_contact(contact) {
         if(!this.has_contact(contact)) {
             let index = this.contacts.concat(contact).sort((a, b) => {
-                return a.clock - b.clock;
+                return a.clock.time - b.clock.time;
             }).indexOf(contact);
 
             this.contacts.splice(index, 0, contact);

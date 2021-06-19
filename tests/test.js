@@ -1,5 +1,31 @@
 const Plexus = require("../index");
 
+
+let bucket = new Plexus.Bucket();
+let contact_a = new Plexus.Contact({
+    id: "contact_a"
+});
+let contact_b = new Plexus.Contact({
+    id: "contact_b"
+});
+let contact_c = new Plexus.Contact({
+    id: "contact_c"
+});
+
+
+bucket.add_contact(contact_a); // Head
+bucket.add_contact(contact_b); // Head
+bucket.add_contact(contact_c); // Head
+
+// Tail?
+bucket.remove_contact(contact_b);
+bucket.add_contact(contact_b);
+
+
+console.log(bucket);
+
+return;
+
 let a = new Plexus.Node();
 a.rpc.on("ready", () => {
     let b = new Plexus.Node({contact: new Plexus.Contact({port: 4545})});
