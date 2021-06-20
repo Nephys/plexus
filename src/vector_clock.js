@@ -1,8 +1,10 @@
 const time_map = new Map();
 
 class VectorClock {
-    constructor(options = {}) {
-        this.start = options.start || 0;
+    constructor({
+        start = 0
+    } = {}) {
+        this.start = start;
     }
 
     get time() {

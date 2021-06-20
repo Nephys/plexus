@@ -1,8 +1,11 @@
+const crypto = require("crypto");
+
 const VERSION = "2.0";
 
 class Message {
     constructor(spec = {}) {
         this.jsonrpc = VERSION;
+        this.id = spec.id || this.create_id();
 
         if(this.is_request(spec)) {
 
@@ -23,6 +26,10 @@ class Message {
         }else {
             throw new Error("Invalid message specification");
         }
+    }
+
+    create_id() {
+        return Buffer.from(crypto.randomBytes(16)).toString("hex");
     }
 
     serialize() {

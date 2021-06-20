@@ -9,13 +9,22 @@ const PACKETS = {
     ACKNOWLEDGE: 0x9001,
 };
 
+const MESSAGE_TYPES = {
+    REQUEST: 0,
+    RESPONSE: 1,
+    UNKNOWN: -1
+}
+
 const pending_handshakes = new Map();
+const pending_requests = new Map();
 
 class RPC extends EventEmitter {
-    constructor(options = {}) {
+    constructor({
+        port = 8080
+    } = {}) {
         super();
 
-        this.port = options.port || 8080
+        this.port = port;
         
         this.socket = dgram.createSocket("udp4");
         
@@ -125,20 +134,29 @@ class RPC extends EventEmitter {
             let spec = JSON.parse(bytes.toString());
             let message = new Message(spec);
 
-            let is_request = !!(message.method && message.params);
-            let is_response = !!((message.result != null) || message.error);
-
             this.emit("message", message, {host, port});
-            if(is_request) {
-                this.emit(message.method, message.params, {host, port});
-            } else if(is_response) {
-
+            if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
+                this.emit(message.method, message, {host, port});
+            } else if(this.message_type(message) == MESSAGE_TYPES.RESPONSE && message.id) {
+                if(pending_requests.has(message.id)) {
+                    let emitter = pending_requests.get(message.id);
+                    emitter.emit("response", message, {host, port});
+                    pending_requests.delete(message.id);
+                }
             } else {
                 console.log("dropping irrelevant message");
             }
         } catch (error) {
             console.log(error);
         }
+    }
+
+    message_type(message) {
+        let is_request = !!(message.method && message.params);
+        let is_response = !!((message.result != null) || message.error);
+
+        let type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
+        return type;
     }
 
     //  Handshake negotiation
@@ -173,7 +191,11 @@ class RPC extends EventEmitter {
 
         //  Only send the message if the remote is responding
         handshake.on("connected", () => {
-            this.socket.send(message, port, host);
+            if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
+                pending_requests.set(message.id, handshake);
+            }
+
+            this.socket.send(message.serialize(), port, host);
         });
         return handshake;
     }

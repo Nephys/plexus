@@ -3,17 +3,22 @@ const crypto = require("crypto");
 const VectorClock = require("./vector_clock");
 
 class Contact {
-    constructor(options = {}) {
-        this.host = options.host || "127.0.0.1";
-        this.port = options.port || 8080
+    constructor({
+        host = "127.0.0.1",
+        port = 8080,
+    
+        hash = { algorithm: "sha256", encoding: "hex" },
+        id,
+        clock = new VectorClock()
+    } = {}) {
+        this.host = host;
+        this.port = port;
 
-        this.hash = options.hash || {algorithm: "sha256", encoding: "hex"};
-        this.hash.algorithm = this.hash.algorithm ? this.hash.algorithm : "sha256";
-        this.hash.encoding = this.hash.encoding ? this.hash.encoding : "hex";
+        this.hash = hash
 
-        this.id = options.id || this.generate_id();
+        this.id = id || this.generate_id();
 
-        this.clock = new VectorClock();
+        this.clock = clock;
     }
 
     generate_id() {

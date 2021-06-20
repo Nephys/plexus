@@ -10,15 +10,16 @@ stdin.setEncoding("utf8");
 
 let remote = null;
 let port = Math.floor(Math.random() * 6000 + 1);
-let node = new Plexus.Node({contact: new Plexus.Contact({port})});
+let node = new Plexus.Node({port: port});
 
 node.rpc.on("ready", () => {
-    node.rpc.on("DATA", (params, {host, port}) => {
+    node.rpc.on("DATA", (message, {host, port}) => {
+        let params = message.params;
         console.log(`[${params.sender}]: ${params.data}`);
     });
 
     node.rpc.on("message", (message, {host, port}) => {
-        console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
+        // console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
     });
     
     console.log("please enter the <IP:PORT> of the remote peer");
@@ -44,7 +45,7 @@ node.rpc.on("ready", () => {
                         timestamp: new Date().getTime()
                     }
                 });
-                node.rpc.send_message(message.serialize(), remote).on("timeout", () => {
+                node.rpc.send_message(message, remote).on("timeout", () => {
                     remote = null;
                     console.log("lost connectio to remote peer");
                     console.log("please enter the <IP:PORT> of the remote peer");

@@ -2,12 +2,18 @@ const Bucket = require("./bucket");
 const Message = require("./message");
 
 class Router {
-    constructor(options = {}) {
-        this.self = options.contact;
+    constructor({
+        contact,
+        
+        rpc,
+        capacity,
+        peers
+    } = {}) {
+        this.self = contact;
 
-        this.rpc = options.rpc;
-        this.capacity = options.capacity;
-        this.peers = options.peers;
+        this.rpc = rpc;
+        this.capacity = capacity;
+        this.peers = peers;
         this.buckets = {};
     }
 

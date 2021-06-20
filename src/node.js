@@ -4,26 +4,38 @@ const Contact = require("./contact");
 const Message = require("./message");
 const Router = require("./router");
 const RPC = require("./rpc");
+const VectorClock = require("./vector_clock");
 
 class Node extends EventEmitter {
-    constructor(options = {}) {
+    constructor({
+        host = "127.0.0.1",
+        port = 8080,
+        id,
+        
+        capacity = 160,
+        peers = 20
+    } = {}) {
         super();
 
         //TODO
         //  Node's own contact information
-        this.self = options.contact || new Contact();
+        this.self = new Contact({
+            host:host,
+            port: port,
+            id: id
+        });
         
         //  Remote Procedure Calls
         this.rpc = new RPC({
-            port: this.self.port
+            port: port
         });
 
         //  Network router keeping the network structured
         this.router = new Router({
             contact: this.self,
             rpc: this.rpc,
-            capacity: options.capacity || 160,
-            peers: options.peers || 20
+            capacity: capacity,
+            peers: peers
         });
 
         //  RPC Message handler
@@ -33,7 +45,6 @@ class Node extends EventEmitter {
     bind_rpc_handlers() {
         let handlers = [
             {"PING": this.on_ping},
-            {"PONG": this.on_pong},
             {"FIND": this.on_find},
         ];
 
@@ -46,38 +57,24 @@ class Node extends EventEmitter {
         });
     }
 
-    on_ping(params, {host, port}) {
+    on_ping(message, {host, port}) {
+        let params = message.params;
         let contact = new Contact({
             host: host,
             port: port,
-            id: params.id
+            id: params.id,
+            clock: new VectorClock({start: params.time})
         });
 
         console.log(`received PING from ${contact.name} with id ${contact.id}`);
         
-        this.self.clock.update(contact.id);
-        this.rpc.send_message(new Message({method: "pong", params: {id: this.self.id}}).serialize(), {host, port});
         this.router.update_contact(contact);
-        this.emit("PING", params, {host, port});
-        
-        console.log(`sent PONG to ${contact.name} with id ${this.self.id}`);
+        this.self.clock.update(contact.id);
+        this.rpc.send_message(new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id}), {host, port});
     }
 
-    on_pong(params, {host, port}) {
-        let contact = new Contact({
-            host: host,
-            port: port,
-            id: params.id
-        });
-
-        console.log(`received PONG from ${contact.name} with id ${contact.id}`);
-        this.router.update_contact(contact);
-        this.emit("PONG", params, {host, port});
-
-        this.self.clock.update(contact.id);
-    }
-
-    on_find(params, {host, port}) {
+    on_find(message, {host, port}) {
+        let params = message.params;
         let key = params.key;
         let limit = this.router.peers;
         let sender = new Contact({
@@ -87,13 +84,27 @@ class Node extends EventEmitter {
         });
 
         let near = this.router.get_contacts_near(key, limit, sender);
+        return near;
     }
 
     connect({host, port}) {
-        let handshake = this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id}}).serialize(), {host, port});
+        let handshake = this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}}), {host, port});
         this.self.clock.update(this.self.id);
-        handshake.on("connected", () => {
-            this.emit("connected", {host, port});
+        // handshake.on("connected", () => {
+        //     this.emit("connected", {host, port});
+        // });
+
+        handshake.on("response", (message, {host, port}) => {
+            let contact = new Contact({
+                host: host,
+                port: port,
+                id: message.result.id,
+                clock: new VectorClock({start: message.result.time})
+            });
+
+            this.router.update_contact(contact);
+            this.self.clock.update(contact.id);
+            this.emit("connected", contact);
         });
 
         return handshake;
