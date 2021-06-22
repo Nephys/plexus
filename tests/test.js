@@ -44,10 +44,29 @@ a.rpc.on("ready", () => {
         a.connect({host: "127.0.0.1", port: 4545});
 
         a.on("connected", async (contact) => {
-            // a.rpc.send_message(new Plexus.Message({result: "DEBUG_MESSAGE"}), {host: "127.0.0.1", port: 4545});
+            // a.rpc.send_message(new Plexus.Message({method: "test_method", params: {}}), {host: "127.0.0.1", port: 4545});
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            console.log("store test");
+            a.store(Buffer.from("key"), {data: "value"});
+
+            // await new Promise((resolve) => setTimeout(resolve, 1000));
             // const util = require("util");
+
+            // let contacts = a.router.get_contacts_near(b.self.buffer, a.router.peers, a.self.buffer);
+            // console.log(contacts[0]);
+            // console.log(b.self);
+            
+            // console.log(contacts[0].buffer.toString("hex"));
+            // console.log(b.self.buffer.toString("hex"));
+
+            // console.log(typeof contacts[0].buffer.toString("hex"));
+            // console.log(typeof b.self.buffer.toString("hex"));
+
+            // console.log(contacts[0].buffer.toString("hex") == b.self.buffer.toString("hex"));
+            // console.log(contacts[0].buffer == b.self.buffer);
+
+            // console.log(a.router.distance(contacts[0].buffer, b.self.buffer));
+            // console.log(contacts[0].buffer.compare(b.self.buffer) == 0);
             
 
             // console.log("--------------- a ---------------");
@@ -69,7 +88,7 @@ a.rpc.on("ready", () => {
             // console.log(util.inspect(a, {showHidden: true, colors: true, depth: Infinity}));
 
 
-            process.exit(0);
+            // process.exit(0);
         });
     });
 

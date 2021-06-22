@@ -139,8 +139,11 @@ class RPC extends EventEmitter {
                 this.emit(message.method, message, {host, port});
             } else if(this.message_type(message) == MESSAGE_TYPES.RESPONSE && message.id) {
                 if(pending_requests.has(message.id)) {
-                    let emitter = pending_requests.get(message.id);
+                    let {emitter, timeout} = pending_requests.get(message.id);
+
+                    clearTimeout(timeout);
                     emitter.emit("response", message, {host, port});
+                    
                     pending_requests.delete(message.id);
                 }
             } else {
@@ -185,14 +188,17 @@ class RPC extends EventEmitter {
         return emitter;
     }
 
-    send_message(message, {host, port}) {
+    send_message(message, {host, port}, attempts = 60, timeout = 1000) {
         //  Initiate a handshake with the remote
-        let handshake = this.handshake({host, port});
+        let handshake = this.handshake({host, port}, attempts, timeout);
 
         //  Only send the message if the remote is responding
         handshake.on("connected", () => {
             if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
-                pending_requests.set(message.id, handshake);
+                let response_timeout = setTimeout(() => {
+                    pending_requests.delete(message.id);
+                }, attempts * timeout);
+                pending_requests.set(message.id, {emitter: handshake, timeout: response_timeout});
             }
 
             this.socket.send(message.serialize(), port, host);

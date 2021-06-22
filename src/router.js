@@ -17,10 +17,8 @@ class Router {
         this.buckets = {};
     }
 
-    distance(contact0, contact1) {
-        let buffer0 = contact0.buffer;
-        let buffer1 = contact1.buffer;
-
+    //  Returns the XOR Metric distance between two buffers (buffers dont need to be of same length)
+    distance(buffer0, buffer1) {
         let min = Math.min(buffer0.length, buffer1.length);
         let max = Math.max(buffer0.length, buffer1.length);
 
@@ -38,10 +36,12 @@ class Router {
         return distance;
     }
 
+    //  Returns the number of known contacts
     get size() {
         return Object.keys(this.buckets).length;
     }
 
+    //  Returns a list of every known contacts
     get contacts() {
         let contacts = [];
         let indexes = Object.keys(this.buckets);
@@ -56,8 +56,9 @@ class Router {
         return contacts;
     }
 
+    //  Get the bucket index of a contact compared to another one
     get_bucket_index(contact0, contact1) {
-        let distance = this.distance(contact0, contact1);
+        let distance = this.distance(contact0.buffer, contact1.buffer);
         let index = distance.length;
 
         for (var i = 0; i < distance.length; i++) {
@@ -78,6 +79,7 @@ class Router {
         return index;
     }
 
+    //  Update the list of contacts (add new, update order, replace old)
     update_contact(contact) {
         let bucket_index = this.get_bucket_index(this.self, contact);
 
@@ -91,19 +93,19 @@ class Router {
         }
     }
 
+    //  Move to the start of the contact list
     to_head(contact, bucket) {
-        //  Move to the start of the contact list
         bucket.add_contact(contact);
     }
 
+    //  Move to the end of the contact list
     to_tail(contact, bucket) {
-        //  Move to the end of the contact list
         bucket.remove_contact(contact);
         bucket.add_contact(contact);
     }
 
+    //  Replace the contact at head with the new contact if it does not respond
     ping_head(contact, bucket) {
-        //  Replace the contact at head with the new contact if it does not respond
         let head = bucket.get_contact(0);
         let ping = new Message({method: "ping", params: {id: this.self.id}});
 
@@ -114,12 +116,10 @@ class Router {
         });
     }
 
-    get_contacts_near(buffer, limit, sender_contact) {
+    //  Returns a list of the nearest contacts from the specified buffer
+    get_contacts_near(buffer, limit, sender) {
         let contacts = this.contacts.map((c) => {
-            let key_contact = {
-                buffer
-            }
-            let distance = this.distance(c, key_contact);
+            let distance = this.distance(c.buffer, buffer);
 
             return {
                 contact: c,
@@ -148,7 +148,7 @@ class Router {
 
             return 0;
         }).filter((c) => {
-            return c.contact.id !== sender_contact.id;
+            return c.contact.buffer !== sender;
         }).splice(0, limit).map((c) => {
             return c.contact;
         });

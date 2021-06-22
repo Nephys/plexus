@@ -3,17 +3,23 @@ const crypto = require("crypto");
 const VERSION = "2.0";
 
 class Message {
-    constructor(spec = {}) {
+    constructor({
+        id,
+
+        method,
+        params,
+
+        result,
+        error
+    } = {}) {
         this.jsonrpc = VERSION;
-        this.id = spec.id || this.create_id();
+        this.id = id || this.create_id();
 
+        let spec = {id, method, params, result, error};
         if(this.is_request(spec)) {
-
             this.method = spec.method.toUpperCase();
             this.params = spec.params;
-
         }else if(this.is_response(spec)) {
-
             this.result = spec.result;
 
             if(spec.error) {
@@ -22,7 +28,6 @@ class Message {
                     message: spec.error.message
                 }
             }
-
         }else {
             throw new Error("Invalid message specification");
         }

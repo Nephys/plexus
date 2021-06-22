@@ -46,6 +46,7 @@ class Node extends EventEmitter {
         let handlers = [
             {"PING": this.on_ping},
             {"FIND": this.on_find},
+            {"STORE": this.on_store},
         ];
 
         for (let i = 0; i < handlers.length; i++) {
@@ -57,8 +58,12 @@ class Node extends EventEmitter {
         });
     }
 
+    
+    //  RPC
+    //  Respond to PING requests with the node's ID and logical time
     on_ping(message, {host, port}) {
         let params = message.params;
+        
         let contact = new Contact({
             host: host,
             port: port,
@@ -73,26 +78,35 @@ class Node extends EventEmitter {
         this.rpc.send_message(new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id}), {host, port});
     }
 
+    //  Respond to FIND requests with the closest nodes possible of hosting the specified data
     on_find(message, {host, port}) {
         let params = message.params;
-        let key = params.key;
+
+        let key = params.key;               //  Buffer
         let limit = this.router.peers;
-        let sender = new Contact({
-            host: host,
-            port: port,
-            id: params.id
-        });
+        let sender = params.sender;         //  Buffer
 
         let near = this.router.get_contacts_near(key, limit, sender);
-        return near;
+        this.rpc.send_message(new Message({result: {contacts: near}}), {host, port});
+    }
+
+    //  Respond to STORE requests by storing the specified item on the node
+    on_store(message, {host, port}) {
+        console.log(message);
+    }
+
+
+    //  NODE
+    store(key, value) {
+        let contacts = this.router.get_contacts_near(key, this.router.peers, this.self.buffer);
+        contacts.map((contact) => {
+            this.rpc.send_message(new Message({method: "store", params: {value: value}}), {host: contact.host, port: contact.port});
+        });
     }
 
     connect({host, port}) {
         let handshake = this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}}), {host, port});
         this.self.clock.update(this.self.id);
-        // handshake.on("connected", () => {
-        //     this.emit("connected", {host, port});
-        // });
 
         handshake.on("response", (message, {host, port}) => {
             let contact = new Contact({

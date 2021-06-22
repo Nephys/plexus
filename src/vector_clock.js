@@ -14,7 +14,6 @@ class VectorClock {
 
     update(id = null) {
         time_map.set(id, (time_map.get(id) || 0) + 1);
-        console.log(`updating clock for ${id}, total clock set to ${this.time}`);
         return this.time;
     }
 }
