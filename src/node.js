@@ -96,29 +96,48 @@ class Node extends EventEmitter {
 
         let near = this.router.get_contacts_near(key, limit, sender);
 
-        let response = new Message({result: {contacts: near}});
+        let response = new Message({result: {contacts: near}, id: message.id});
         this.rpc.send_message(response, {host, port});
     }
 
     //  Respond to STORE requests by storing the specified item on the node
     on_store(message, {host, port}) {
-        console.log(require("util").inspect(message, {showHidden: true, depth: Infinity, colors: true}));
         let params = message.params;
         this.self.clock.update(params.sender.id);
+
+        let item = params.item;
+        console.log(require("util").inspect(item, {showHidden: true, depth: Infinity, colors: true}));
     }
 
 
     //  NODE
-    find(key) {
-        //TODO  Check if the item is locally stored
+    find({key}) {
+        let emitter = new EventEmitter();
 
+        //TODO  Check if the item is locally stored
+        let contacts = this.router.get_contacts_near(key, this.router.peers, this.self.buffer);
+        contacts.map((contact) => {
+            //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+            let request = new Message({method: "find", params: {key: key, limit: this.router.peers, sender: {id: this.self.id, time: this.self.clock.time}}});
+            let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
+
+            handshake.once("response", (message, {host, port}) => {
+                emitter.emit("response", message, {host, port});
+                handshake.removeAllListeners("timeout");
+            });
+
+            handshake.once("timeout", () => {
+                emitter.emit("timeout");
+            });
+        });
+
+        return emitter;
     }
 
-    store(data) {
+    store({key, value}) {
         this.self.clock.update(this.self.id);
         
-        // let item = {key, value};
-        let item = new Item({value: data, publisher: this.self.id, hash: this.self.hash});
+        let item = new Item({key: key, value: value, publisher: this.self.id, hash: this.self.hash});
         
         let contacts = this.router.get_contacts_near(item.key, this.router.peers, this.self.buffer);
         contacts.map((contact) => {

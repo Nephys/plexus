@@ -24,7 +24,12 @@ a.rpc.on("ready", () => {
 
             if(connections >= nodes.length) {
                 console.log(`[selftest] storage`);
-                a.store("test_value");
+                a.store({key: "key", value: "value"});
+                a.store({value: "hashed_value"});
+
+                a.find({key: "key"}).once("response", (message, {host, port}) => {
+                    console.log(message);
+                });
             }
         });
     }

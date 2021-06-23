@@ -8,6 +8,10 @@ class Item {
         
         hash = { algorithm: "sha256", encoding: "hex" }
     } = {}) {
+        if(!value || !publisher) {
+            throw new Error("Invalid item specification");
+        }
+
         this.value = value;
         this.key = key || this.create_hash(this.value, hash);
 
