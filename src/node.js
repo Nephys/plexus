@@ -1,6 +1,7 @@
 const { EventEmitter } = require("events");
 
 const Contact = require("./contact");
+const Item = require("./item");
 const Message = require("./message");
 const Router = require("./router");
 const RPC = require("./rpc");
@@ -101,7 +102,7 @@ class Node extends EventEmitter {
 
     //  Respond to STORE requests by storing the specified item on the node
     on_store(message, {host, port}) {
-        console.log(message);
+        console.log(require("util").inspect(message, {showHidden: true, depth: Infinity, colors: true}));
         let params = message.params;
         this.self.clock.update(params.sender.id);
     }
@@ -113,14 +114,16 @@ class Node extends EventEmitter {
 
     }
 
-    store(key, value) {
+    store(data) {
         this.self.clock.update(this.self.id);
-
-        let item = {key, value};
-
-        let contacts = this.router.get_contacts_near(key, this.router.peers, this.self.buffer);
-        let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+        
+        // let item = {key, value};
+        let item = new Item({value: data, publisher: this.self.id, hash: this.self.hash});
+        
+        let contacts = this.router.get_contacts_near(item.key, this.router.peers, this.self.buffer);
         contacts.map((contact) => {
+            //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+            let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
             this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
     }

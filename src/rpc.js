@@ -48,6 +48,7 @@ class RPC extends EventEmitter {
 
     error_handler(error) {
         console.log(error.message);
+        this.socket.close();
     }
 
     message_handler(bytes, rinfo) {

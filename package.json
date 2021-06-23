@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev-chat": "node tests/chat.js",
+    "chat": "node tests/chat.js",
     "test": "node tests/test.js"
   },
   "engines": {

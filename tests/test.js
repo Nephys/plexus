@@ -2,7 +2,7 @@ const Plexus = require("../index");
 
 let a = new Plexus.Node();
 
-let node_count = 10;
+let node_count = 15;
 let nodes = [];
 
 let start = a.self.port + 1;
@@ -10,6 +10,9 @@ while(nodes.length < node_count) {
     let node = new Plexus.Node({port: start++});
     nodes.push(node);
 }
+
+
+console.log(`Running local selftest with ${nodes.length} nodes`);
 
 a.rpc.on("ready", () => {
     let connections = 0;
@@ -20,8 +23,8 @@ a.rpc.on("ready", () => {
             connections++;
 
             if(connections >= nodes.length) {
-                console.log("[Selftest]> STORE");
-                a.store(Buffer.from("key").toString("utf-8"), {data: "value"});
+                console.log(`[selftest] storage`);
+                a.store("test_value");
             }
         });
     }
