@@ -109,7 +109,7 @@ class Router {
         let head = bucket.get_contact(0);
         let ping = new Message({method: "ping", params: {id: this.self.id}});
 
-        let handshake = this.rpc.send_message(ping.serialize(), {host: head.host, port: head.port});
+        let handshake = this.rpc.send_message(ping, {host: head.host, port: head.port});
         handshake.on("timeout", () => {
             this.remove_contact(head);
             this.add_contact(contact);

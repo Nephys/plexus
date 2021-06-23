@@ -11,6 +11,8 @@ class Node extends EventEmitter {
         host = "127.0.0.1",
         port = 8080,
         id,
+
+        hash = { algorithm: "sha256", encoding: "hex" },
         
         capacity = 160,
         peers = 20
@@ -22,6 +24,9 @@ class Node extends EventEmitter {
         this.self = new Contact({
             host:host,
             port: port,
+
+            hash: hash,
+
             id: id
         });
         
@@ -70,43 +75,61 @@ class Node extends EventEmitter {
             id: params.id,
             clock: new VectorClock({start: params.time})
         });
+        this.self.clock.update(contact.id);
 
         console.log(`received PING from ${contact.name} with id ${contact.id}`);
-        
         this.router.update_contact(contact);
-        this.self.clock.update(contact.id);
-        this.rpc.send_message(new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id}), {host, port});
+
+        let response = new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id});
+        this.rpc.send_message(response, {host, port});
     }
 
     //  Respond to FIND requests with the closest nodes possible of hosting the specified data
     on_find(message, {host, port}) {
         let params = message.params;
+        this.self.clock.update(params.sender.id);
 
-        let key = params.key;               //  Buffer
+        let key = params.key;                       //  Buffer
         let limit = this.router.peers;
-        let sender = params.sender;         //  Buffer
+        let sender = params.sender.buffer;          //  Buffer
 
         let near = this.router.get_contacts_near(key, limit, sender);
-        this.rpc.send_message(new Message({result: {contacts: near}}), {host, port});
+
+        let response = new Message({result: {contacts: near}});
+        this.rpc.send_message(response, {host, port});
     }
 
     //  Respond to STORE requests by storing the specified item on the node
     on_store(message, {host, port}) {
         console.log(message);
+        let params = message.params;
+        this.self.clock.update(params.sender.id);
     }
 
 
     //  NODE
+    find(key) {
+        //TODO  Check if the item is locally stored
+
+    }
+
     store(key, value) {
+        this.self.clock.update(this.self.id);
+
+        let item = {key, value};
+
         let contacts = this.router.get_contacts_near(key, this.router.peers, this.self.buffer);
+        let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
         contacts.map((contact) => {
-            this.rpc.send_message(new Message({method: "store", params: {value: value}}), {host: contact.host, port: contact.port});
+            this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
     }
 
     connect({host, port}) {
-        let handshake = this.rpc.send_message(new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}}), {host, port});
         this.self.clock.update(this.self.id);
+
+        let request = new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}});
+        let handshake = this.rpc.send_message(request, {host, port});
 
         handshake.on("response", (message, {host, port}) => {
             let contact = new Contact({
