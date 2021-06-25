@@ -197,6 +197,7 @@ class RPC extends EventEmitter {
         handshake.on("connected", () => {
             if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
                 let response_timeout = setTimeout(() => {
+                    handshake.emit("ignore");
                     pending_requests.delete(message.id);
                 }, attempts * timeout);
                 pending_requests.set(message.id, {emitter: handshake, timeout: response_timeout});

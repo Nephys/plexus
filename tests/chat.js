@@ -19,7 +19,8 @@ node.rpc.on("ready", () => {
     });
 
     node.rpc.on("message", (message, {host, port}) => {
-        // console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
+        return;     // Ignore
+        console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
     });
     
     console.log("please enter the <IP:PORT> of the remote peer");

@@ -58,7 +58,7 @@ class Router {
 
     //  Get the bucket index of a contact compared to another one
     get_bucket_index(contact0, contact1) {
-        let distance = this.distance(contact0.buffer, contact1.buffer);
+        let distance = this.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
         let index = distance.length;
 
         for (var i = 0; i < distance.length; i++) {
@@ -119,7 +119,7 @@ class Router {
     //  Returns a list of the nearest contacts from the specified buffer
     get_contacts_near(buffer, limit, sender) {
         let contacts = this.contacts.map((c) => {
-            let distance = this.distance(c.buffer, buffer);
+            let distance = this.distance(Buffer.from(c.id), buffer);
 
             return {
                 contact: c,
@@ -148,12 +148,25 @@ class Router {
 
             return 0;
         }).filter((c) => {
-            return c.contact.buffer !== sender;
+            return Buffer.from(c.contact.id) !== sender;
         }).splice(0, limit).map((c) => {
             return c.contact;
         });
 
         return contacts;
+    }
+
+    has_contact_id(id) {
+        return this.contacts.map((c) => {return c.id}).includes(id);
+    }
+
+    get_contact(id) {
+        if(this.has_contact_id(id)) {
+            let index = this.contacts.map((c) => {return c.id}).indexOf(id);
+            return this.contacts[index];
+        } else {
+            return null;
+        }
     }
 }
 

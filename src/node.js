@@ -46,6 +46,9 @@ class Node extends EventEmitter {
 
         //  RPC Message handler
         this.bind_rpc_handlers();
+
+        //  Storage Test
+        this.storage = new Map();
     }
 
     bind_rpc_handlers() {
@@ -90,14 +93,31 @@ class Node extends EventEmitter {
         let params = message.params;
         this.self.clock.update(params.sender.id);
 
-        let key = params.key;                       //  Buffer
+        let key = params.key;                                //  Buffer
         let limit = this.router.peers;
-        let sender = params.sender.buffer;          //  Buffer
+        let sender = Buffer.from(params.sender.id);         //  Buffer
 
-        let near = this.router.get_contacts_near(key, limit, sender);
-
-        let response = new Message({result: {contacts: near}, id: message.id});
-        this.rpc.send_message(response, {host, port});
+        //  Check if the key/node is locally stored
+        if(this.router.has_contact_id(key)) {
+            let response = new Message({result: this.router.get_contact(key), id: message.id});
+            this.rpc.send_message(response, {host, port});
+        } else if(this.storage.has(key)) {
+            let response = new Message({result: this.storage.get(key), id: message.id});
+            this.rpc.send_message(response, {host, port});
+        } else {
+            //  Get a list of the closest known contacts to the key
+            let near = this.router.get_contacts_near(key, limit, sender);
+            near.map((contact) => {
+                //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+                let request = new Message({method: "find", params: {key: key, limit: limit, sender: {id: this.self.id, time: this.self.clock.time}}});
+                let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
+            
+                handshake.on("response", (m, {h, p}) => {
+                    let response = new Message({result: m.result, id: message.id});
+                    this.rpc.send_message(response, {host, port});
+                });
+            });
+        }
     }
 
     //  Respond to STORE requests by storing the specified item on the node
@@ -106,29 +126,44 @@ class Node extends EventEmitter {
         this.self.clock.update(params.sender.id);
 
         let item = params.item;
-        console.log(require("util").inspect(item, {showHidden: true, depth: Infinity, colors: true}));
+        
+        //TODO Implement a better storage system
+        this.storage.set(item.key, item);
     }
 
 
     //  NODE
     find({key}) {
+        this.self.clock.update(this.self.id);
         let emitter = new EventEmitter();
 
-        //TODO  Check if the item is locally stored
-        let contacts = this.router.get_contacts_near(key, this.router.peers, this.self.buffer);
+        let found = false;
+        let timeouts = 0;
+        let contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {
             //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
             let request = new Message({method: "find", params: {key: key, limit: this.router.peers, sender: {id: this.self.id, time: this.self.clock.time}}});
             let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
 
-            handshake.once("response", (message, {host, port}) => {
-                emitter.emit("response", message, {host, port});
+            handshake.on("response", (message, {host, port}) => {
+                if(!found) {
+                    found = true;
+                    emitter.emit("found", message.result);
+                }
+
+                handshake.removeAllListeners("ignore");
                 handshake.removeAllListeners("timeout");
             });
 
-            handshake.once("timeout", () => {
-                emitter.emit("timeout");
-            });
+            let on_rejected = () => {
+                timeouts++;
+                if(timeouts >= contacts.length){
+                    emitter.emit("timeout");
+                }
+            }
+
+            handshake.on("ignore", on_rejected);
+            handshake.on("timeout", on_rejected);
         });
 
         return emitter;
@@ -139,7 +174,7 @@ class Node extends EventEmitter {
         
         let item = new Item({key: key, value: value, publisher: this.self.id, hash: this.self.hash});
         
-        let contacts = this.router.get_contacts_near(item.key, this.router.peers, this.self.buffer);
+        let contacts = this.router.get_contacts_near(item.key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {
             //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
             let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});

@@ -30,11 +30,6 @@ class Contact {
     get name() {
         return `${this.host}:${this.port}`;
     }
-
-    get buffer() {
-        let buffer = Buffer.from(this.id, 0, this.hash.encoding);
-        return buffer;
-    }
 }
 
 module.exports = Contact;

@@ -46,7 +46,7 @@ class Message {
     }
 
     is_response(parsed) {
-        return !!((parsed.result != null) || parsed.error);
+        return !!(parsed.id && ((parsed.result != null) || parsed.error));
     }
 }
 
