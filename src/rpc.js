@@ -47,7 +47,7 @@ class RPC extends EventEmitter {
     }
 
     error_handler(error) {
-        console.log(error.message);
+        //console.log(error.message);
         this.socket.close();
     }
 
@@ -89,7 +89,7 @@ class RPC extends EventEmitter {
         const message = Buffer.concat([type_bytes, value_bytes]);
         this.socket.send(message, 0, message.length, port, host);
 
-        console.log(`sent request packet ${id} to ${host}:${port}`);
+        //console.log(`sent request packet ${id} to ${host}:${port}`);
     }
     
     send_acknowledge({host, port}, id) {
@@ -104,19 +104,19 @@ class RPC extends EventEmitter {
         const message = Buffer.concat([type_bytes, value_bytes]);
         this.socket.send(message, 0, message.length, port, host);
 
-        console.log(`sent acknowledge packet ${id} to ${host}:${port}`);
+        //console.log(`sent acknowledge packet ${id} to ${host}:${port}`);
     }
 
     on_request({host, port}, bytes) {
         const id = bytes.toString();
-        console.log(`receiving request packet with token ${id} from ${host}:${port}`);
+        //console.log(`receiving request packet with token ${id} from ${host}:${port}`);
 
         this.send_acknowledge({host, port}, id);
     }
 
     on_acknowledge({host, port}, bytes) {
         const id = bytes.toString();
-        console.log(`receiving acknowledge packet with token ${id} from ${host}:${port}`);
+        //console.log(`receiving acknowledge packet with token ${id} from ${host}:${port}`);
 
         // Handle pending handshakes if any
         if(pending_handshakes.has(id)) {
@@ -148,10 +148,10 @@ class RPC extends EventEmitter {
                     pending_requests.delete(message.id);
                 }
             } else {
-                console.log("dropping irrelevant message");
+                //console.log("dropping irrelevant message");
             }
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
     }
 
@@ -169,13 +169,13 @@ class RPC extends EventEmitter {
         let id = this.create_id();
 
         //  Ping the remote until it responds or the handshake times out
-        console.log(`negotiating handshake with ${host}:${port}`);
+        //console.log(`negotiating handshake with ${host}:${port}`);
         let negotiator = setInterval(() => {
             if(attempts > 0) {
                 attempts--;
                 this.send_request({host, port}, id);
             } else {
-                console.log(`connection to ${host}:${port} timed out`);
+                //console.log(`connection to ${host}:${port} timed out`);
                 
                 clearInterval(negotiator);
                 emitter.emit("timeout");

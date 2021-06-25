@@ -82,6 +82,9 @@ class Router {
     //  Update the list of contacts (add new, update order, replace old)
     update_contact(contact) {
         let bucket_index = this.get_bucket_index(this.self, contact);
+        if(bucket_index >= this.capacity) {
+            return;
+        }
 
         let bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
         if(bucket.has_contact(contact)) {

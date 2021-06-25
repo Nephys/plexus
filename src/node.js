@@ -15,8 +15,20 @@ class Node extends EventEmitter {
 
         hash = { algorithm: "sha256", encoding: "hex" },
         
-        capacity = 160,
-        peers = 20
+        //  The maximum amount of buckets to be stored in the router
+        capacity = 160,             //  (Default: 160)
+        //  The maximum amount of contacts to be stored per bucket
+        peers = 20,                 //  (Default: 20)
+
+
+        //  Item expiration time
+        expire = 86400000,          //  (Default: 24h)
+        //  Bucket refresh interval
+        refresh = 3600000,          //  (Default: 1h)
+        //  Data replication interval
+        replicate = 3600000,        //  (Default: 1h)
+        //  Item republishing interval (only for the item publisher)
+        republish = 86400000        //  (Default: 24h)
     } = {}) {
         super();
 
@@ -56,6 +68,7 @@ class Node extends EventEmitter {
             {"PING": this.on_ping},
             {"FIND": this.on_find},
             {"STORE": this.on_store},
+            {"BROADCAST": this.on_broadcast},
         ];
 
         for (let i = 0; i < handlers.length; i++) {
@@ -63,12 +76,13 @@ class Node extends EventEmitter {
         }
 
         this.rpc.on("ready", () => {
-            console.log(`node ${this.self.id} listening on ${this.self.name}`);
+            // console.log(`node ${this.self.id} listening on ${this.self.name}`);
+            this.emit("ready");
         });
     }
 
     
-    //  RPC
+    //  RPC & Network
     //  Respond to PING requests with the node's ID and logical time
     on_ping(message, {host, port}) {
         let params = message.params;
@@ -81,7 +95,7 @@ class Node extends EventEmitter {
         });
         this.self.clock.update(contact.id);
 
-        console.log(`received PING from ${contact.name} with id ${contact.id}`);
+        // console.log(`received PING from ${contact.name} with id ${contact.id}`);
         this.router.update_contact(contact);
 
         let response = new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id});
@@ -129,6 +143,25 @@ class Node extends EventEmitter {
         
         //TODO Implement a better storage system
         this.storage.set(item.key, item);
+    }
+
+    //  Respond to BROADCAST requests by sendint the message to every known nodes
+    on_broadcast(message, {host, port}) {
+        let params = message.params;
+        this.self.clock.update(params.sender.id);
+
+        let receivers = params.receivers || [];
+        receivers.push(this.self.id);
+
+        let request = new Message({method: "broadcast", params: {data: params.data, sender: params.sender, receivers: receivers}, id: message.id});
+        this.router.contacts.filter((c) => {
+            let is_valid = (c.id !== this.self.id) && (c.id !== params.sender.id) && (!receivers.includes(c.id));
+            return is_valid;
+        }).map((c) => {
+            this.rpc.send_message(request, {host: c.host, port: c.port});
+        });
+
+        this.emit("broadcast", message);
     }
 
 
@@ -179,6 +212,13 @@ class Node extends EventEmitter {
             //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
             let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
             this.rpc.send_message(request, {host: contact.host, port: contact.port});
+        });
+    }
+
+    broadcast({data}) {
+        let request = new Message({method: "broadcast", params: {data: data, sender: {id: this.self.id, time: this.self.clock.time}}});
+        this.router.contacts.map((c) => {
+            this.rpc.send_message(request, {host: c.host, port: c.port});
         });
     }
 

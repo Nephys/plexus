@@ -13,9 +13,12 @@ let port = Math.floor(Math.random() * 6000 + 1);
 let node = new Plexus.Node({port: port});
 
 node.rpc.on("ready", () => {
-    node.rpc.on("DATA", (message, {host, port}) => {
-        let params = message.params;
-        console.log(`[${params.sender}]: ${params.data}`);
+    console.log(`client listening on ${node.self.name}`);
+    node.on("broadcast", (message) => {
+        let data = message.params.data;
+        if(data.type.toUpperCase() == "MESSAGE") {
+            console.log(`[${data.metadata.sender}]: ${data.metadata.text}`);
+        }
     });
 
     node.rpc.on("message", (message, {host, port}) => {
@@ -38,19 +41,16 @@ node.rpc.on("ready", () => {
             });
         } else {
             try {
-                let message = new Plexus.Message({
-                    method: "data",
-                    params: {
-                        data: data.toString().replace(/\r?\n|\r/g, " "),
+                let message_data = {
+                    type: "message",
+                    
+                    metadata: {
+                        text: data.toString().replace(/\r?\n|\r/g, " "),
                         sender: os.hostname(),
                         timestamp: new Date().getTime()
                     }
-                });
-                node.rpc.send_message(message, remote).on("timeout", () => {
-                    remote = null;
-                    console.log("lost connectio to remote peer");
-                    console.log("please enter the <IP:PORT> of the remote peer");
-                });
+                };
+                node.broadcast({data: message_data});
             } catch (error) {
                 stdout.write(`[ERROR]: ${error.message}\n`);
             }
