@@ -32,7 +32,6 @@ class Node extends EventEmitter {
     } = {}) {
         super();
 
-        //TODO
         //  Node's own contact information
         this.self = new Contact({
             host:host,
