@@ -1,5 +1,8 @@
-# Plexus
-Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table
+Plexus
+===
+[![License](https://img.shields.io/github/license/Nephys/plexus)](https://github.com/Nephys/plexus/blob/main/LICENSE)
+
+>Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table
 
 # Quick Start
 Creating a Plexus Node and joining the Mesh Network.
@@ -45,3 +48,8 @@ node.on("broadcast", (message) => {
     console.log(data);
 });
 ```
+# TODO
+- [ ] Implement keep alive (ping oldest contacts to keep the UDP hole open)
+- [ ] Implement Item expiration
+- [ ] Implement Item propagation
+- [ ] Improve the storage system
