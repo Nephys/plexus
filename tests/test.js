@@ -1,8 +1,10 @@
+const EventEmitter = require("events");
+
 const Plexus = require("../index");
 
 let a = new Plexus.Node();
 
-let node_count = 5;
+let node_count = 1000;
 let nodes = [];
 
 console.log(`Running local selftest with ${node_count} nodes`);
@@ -24,11 +26,26 @@ while(nodes.length < node_count) {
 
 a.on("ready", () => {
     let connections = 0;
+    let listening_nodes = 0;
+    let broadcast_data = "tes_message";
+    let broadcast_emitter = new EventEmitter();
+
     for(let i = 0; i < nodes.length; i++) {
         let node = nodes[i];
+        
         let status = a.connect({host: node.self.host, port: node.self.port});
         status.on("response", async (message, {host, port}) => {
             connections++;
+            node.once("broadcast", (message) => {
+                let data = message.params.data;
+                
+                if (data == broadcast_data) {
+                    listening_nodes++;
+                    if(listening_nodes >= nodes.length) {
+                        broadcast_emitter.emit("complete");
+                    }
+                }
+            });
 
             if(connections >= nodes.length) {
                 a.store({key: "key", value: "value"});
@@ -67,29 +84,48 @@ a.on("ready", () => {
                     a.find({key: result.publisher}).on("found", async (result) => {
                         console.log(result);
 
-                        //  Non existent item lookup
+                        //  Broadcasting test
                         console.log("");
                         console.log("");
                         console.log("=============================");console.log("");
                         
-                        console.log("Non existent item lookup");
-                        console.log("Testing if nodes dont find non existent data on the network");
+                        console.log("Broadcasting test");
+                        console.log("Testing if a node can broadcast to the rest of the network");
                         console.log("");
-                        console.log("(The lookup should tiemout and fail)");
 
                         console.log("");console.log("=============================");
                         console.log("");
                         console.log("");
                         await new Promise((resolve) => setTimeout(resolve, 5000));
                         console.log("Starting...");
-                        a.find({key: "notakey"}).on("timeout", async () => {
-                            console.log("timed out");
-                            console.log("DONE");
 
-                            a.broadcast({data: "DONE"});
+                        
+                        a.broadcast({data: broadcast_data});
+                        broadcast_emitter.once("complete", async () => {
+                            console.log(`${listening_nodes}/${nodes.length} nodes listening - (${parseFloat((listening_nodes / nodes.length) * 100).toFixed(2)}%)`);
+                            
+                            //  Non existent item lookup
+                            console.log("");
+                            console.log("");
+                            console.log("=============================");console.log("");
+                            
+                            console.log("Non existent item lookup");
+                            console.log("Testing if nodes dont find non existent data on the network");
+                            console.log("");
+                            console.log("(The lookup should tiemout and fail)");
 
+                            console.log("");console.log("=============================");
+                            console.log("");
+                            console.log("");
                             await new Promise((resolve) => setTimeout(resolve, 5000));
-                            process.exit(0);
+                            console.log("Starting...");
+                            a.find({key: "notakey"}).on("timeout", async () => {
+                                console.log("timed out");
+
+                                console.log(`selftest done`);
+                                await new Promise((resolve) => setTimeout(resolve, 5000));
+                                process.exit(0);
+                            });
                         });
                     });
                 });

@@ -76,7 +76,6 @@ class Node extends EventEmitter {
         }
 
         this.rpc.on("ready", () => {
-            // console.log(`node ${this.self.id} listening on ${this.self.name}`);
             this.emit("ready");
         });
     }
@@ -95,7 +94,6 @@ class Node extends EventEmitter {
         });
         this.self.clock.update(contact.id);
 
-        // console.log(`received PING from ${contact.name} with id ${contact.id}`);
         this.router.update_contact(contact);
 
         let response = new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id});
@@ -145,7 +143,7 @@ class Node extends EventEmitter {
         this.storage.set(item.key, item);
     }
 
-    //  Respond to BROADCAST requests by sendint the message to every known nodes
+    //  Respond to BROADCAST requests by sending the message to every known nodes
     on_broadcast(message, {host, port}) {
         let params = message.params;
         this.self.clock.update(params.sender.id);
@@ -176,6 +174,7 @@ class Node extends EventEmitter {
 
 
     //  NODE
+    //  Find an Item/Node on the network
     find({key}) {
         this.self.clock.update(this.self.id);
         let emitter = new EventEmitter();
@@ -212,6 +211,7 @@ class Node extends EventEmitter {
         return emitter;
     }
 
+    //  Store data on the network
     store({key, value}) {
         this.self.clock.update(this.self.id);
         
@@ -225,6 +225,7 @@ class Node extends EventEmitter {
         });
     }
 
+    //  Broadcast to the whole network
     broadcast({data}) {
         this.self.clock.update(this.self.id);
 
@@ -238,12 +239,12 @@ class Node extends EventEmitter {
         
         //  Create a message containing the data and list of participants
         let request = new Message({method: "broadcast", params: {list, data, sender: {id: this.self.id, time: this.self.clock.time}}});
-
         this.router.contacts.map((contact) => {
             this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
     }
 
+    //  Connect to another node
     connect({host, port}) {
         this.self.clock.update(this.self.id);
 
