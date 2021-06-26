@@ -1,5 +1,5 @@
 # Plexus
-Decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table
+Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table
 
 # Quick Start
 Creating a Plexus Node and joining the Mesh Network.
