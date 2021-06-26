@@ -17,7 +17,6 @@ while(nodes.length < node_count) {
         node.rpc.on("ready", () => {
             node.connect({host: previous_node.self.host, port: previous_node.self.port});
         });
-        
     }
 
     nodes.push(node);

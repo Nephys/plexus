@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "chat": "node tests/chat.js",
-    "test": "node tests/test.js"
+    "test": "node tests/test.js",
+    "broadcast": "node tests/broadcast.js"
   },
   "engines": {
     "node": ">=15.12.0"

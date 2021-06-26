@@ -12,6 +12,8 @@ let remote = null;
 let port = Math.floor(Math.random() * 6000 + 1);
 let node = new Plexus.Node({port: port});
 
+let client_name = `${os.hostname()}_${port}`
+
 node.rpc.on("ready", () => {
     console.log(`client listening on ${node.self.name}`);
     node.on("broadcast", (message) => {
@@ -28,7 +30,7 @@ node.rpc.on("ready", () => {
     
     console.log("please enter the <IP:PORT> of the remote peer");
     stdin.on("data", (data) => {
-        stdout.write("\033[1A" + `[${os.hostname()}]: ${data.toString()}`);
+        stdout.write("\033[1A" + `[${client_name}]: ${data.toString()}`);
 
         if(!remote) {
             let address = data.toString().replace(/\r?\n|\r/g, " ");
@@ -38,6 +40,7 @@ node.rpc.on("ready", () => {
 
             node.connect(tmp_remote).on("connected", () => {
                 remote = tmp_remote;
+                console.log(`[Welcome to the network, '${client_name}'!]`);
             });
         } else {
             try {
@@ -46,7 +49,7 @@ node.rpc.on("ready", () => {
                     
                     metadata: {
                         text: data.toString().replace(/\r?\n|\r/g, " "),
-                        sender: os.hostname(),
+                        sender: client_name,
                         timestamp: new Date().getTime()
                     }
                 };

@@ -150,18 +150,28 @@ class Node extends EventEmitter {
         let params = message.params;
         this.self.clock.update(params.sender.id);
 
-        let receivers = params.receivers || [];
-        receivers.push(this.self.id);
+        //  Notify of the event
+        this.emit("broadcast", message);
 
-        let request = new Message({method: "broadcast", params: {data: params.data, sender: params.sender, receivers: receivers}, id: message.id});
-        this.router.contacts.filter((c) => {
-            let is_valid = (c.id !== this.self.id) && (c.id !== params.sender.id) && (!receivers.includes(c.id));
-            return is_valid;
-        }).map((c) => {
-            this.rpc.send_message(request, {host: c.host, port: c.port});
+        let skip = params.list;
+        let list = this.router.contacts.map((c) => {
+            return c.id;
+        }).concat(params.list);
+
+        let request = new Message({method: "broadcast", params: {list, data: params.data, sender: {id: this.self.id, time: this.self.clock.time}}});
+        this.router.contacts.map((contact) => {
+            if(!skip.includes(contact.id)) {
+                this.rpc.send_message(request, {host: contact.host, port: contact.port});
+            }
         });
 
-        this.emit("broadcast", message);
+        let contact = new Contact({
+            host: host,
+            port: port,
+            id: params.sender.id,
+            clock: new VectorClock({start: params.sender.time})
+        });
+        this.router.update_contact(contact);
     }
 
 
@@ -216,9 +226,21 @@ class Node extends EventEmitter {
     }
 
     broadcast({data}) {
-        let request = new Message({method: "broadcast", params: {data: data, sender: {id: this.self.id, time: this.self.clock.time}}});
-        this.router.contacts.map((c) => {
-            this.rpc.send_message(request, {host: c.host, port: c.port});
+        this.self.clock.update(this.self.id);
+
+        //  Get a list of participants
+        let list = this.router.contacts.map((c) => {
+            return c.id;
+        });
+
+        //  Add current node to the list
+        list.push(this.self.id);
+        
+        //  Create a message containing the data and list of participants
+        let request = new Message({method: "broadcast", params: {list, data, sender: {id: this.self.id, time: this.self.clock.time}}});
+
+        this.router.contacts.map((contact) => {
+            this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
     }
 
