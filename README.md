@@ -71,6 +71,9 @@ node.on("broadcast", (message) => {
 - [ ] Add documentation
 ###### * (WIP)
 
+# **Documentation**
+>[Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
+
 \
 \
 [@Nephys](https://github.com/Nephys), 2021
