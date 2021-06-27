@@ -9,7 +9,7 @@ npm run test
 ```
 This test will create a 50-Node Local Mesh Network.
 
-**The test consists 4 steps**
+**The test consists of 4 steps**
 Step | Description
 ------------ | -------------
 Item lookup | Testing if nodes can find an item on the network
