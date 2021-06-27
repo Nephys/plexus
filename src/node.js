@@ -26,10 +26,10 @@ class Node extends EventEmitter {
 
         //  Item expiration time
         expire = 86400000,          //  (Default: 24h)
-        //  Data replication interval
-        replicate = 3600000,        //  (Default: 1h)
         //  Item republishing interval (only for the item publisher)
-        republish = 86400000        //  (Default: 24h)
+        republish = 86400000,       //  (Default: 24h)
+        //  Data replication interval
+        replicate = 3600000         //  (Default: 1h)
     } = {}) {
         super();
 
@@ -63,8 +63,8 @@ class Node extends EventEmitter {
         setInterval(this.on_refresh.bind(this), refresh);
 
         setInterval(this.on_expire.bind(this, expire), expire);
+        setInterval(this.on_republish.bind(this, republish), republish);
         setInterval(this.on_replicate.bind(this), replicate);
-        setInterval(this.on_republish.bind(this), republish);
 
         //  RPC Message handler
         this.bind_rpc_handlers();
@@ -72,7 +72,10 @@ class Node extends EventEmitter {
 
 
     //  Tasks
+    //  Refresh the list of contacts, trying to keep their UDP Hole open
     on_refresh() {
+        this.self.clock.update(this.self.id);
+        
         let contacts = this.router.contacts;
         contacts.map((c) => {
             let request = new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}});
@@ -92,7 +95,10 @@ class Node extends EventEmitter {
         });
     }
 
+    //  Delete expired items
     on_expire(expire) {
+        this.self.clock.update(this.self.id);
+
         for (let [key, item] of this.storage){
             if(Date.now() >= item.timestamp + expire) {
                 this.storage.delete(key);
@@ -100,18 +106,38 @@ class Node extends EventEmitter {
         }
     }
 
-    on_replicate() {
-        for (let [key, item] of this.storage){
-            if (item.publisher !== this.self.id) {
-                this.store({key, value: item.value});
+    //  Republish owned items on the network
+    on_republish(republish) {
+        this.self.clock.update(this.self.id);
+
+        for (let [key, entry] of this.storage){
+            let item = new Item({key: key, value: entry.value, publisher: entry.publisher, timestamp: Date.now(), hash: this.self.hash});
+
+            if(entry.publisher == this.self.id && Date.now() >= entry.timestamp + republish) {
+                let contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
+                contacts.map((contact) => {
+                    //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+                    let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+                    this.rpc.send_message(request, {host: contact.host, port: contact.port});
+                });
             }
         }
     }
 
-    on_republish(republish) {
-        for (let [key, item] of this.storage){
-            if(item.publisher == this.self.id && Date.now() >= item.timestamp + republish) {
-                this.store({key, value: item.value});
+    //  Spread items through the network
+    on_replicate() {
+        this.self.clock.update(this.self.id);
+
+        for (let [key, entry] of this.storage){
+            let item = new Item({key: key, value: entry.value, publisher: entry.publisher, timestamp: Date.now(), hash: this.self.hash});
+
+            if (entry.publisher !== this.self.id) {
+                let contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
+                contacts.map((contact) => {
+                    //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+                    let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+                    this.rpc.send_message(request, {host: contact.host, port: contact.port});
+                });
             }
         }
     }
