@@ -16,7 +16,7 @@ Item lookup | Testing if nodes can find an item on the network
 Node lookup | Testing if nodes can find another node on the network
 Broadcasting test | Testing if a node can broadcast to the rest of the network
 Non existent item lookup | Testing if nodes dont find non existent data on the network*
-###### * (The lookup should tiemout and fail)
+###### * (The lookup should timemout and fail)
 
 # **Quick Start**
 Creating a Plexus Node and joining the Mesh Network.

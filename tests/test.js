@@ -110,7 +110,7 @@ a.on("ready", () => {
                             console.log("Non existent item lookup");
                             console.log("Testing if nodes dont find non existent data on the network");
                             console.log("");
-                            console.log("(The lookup should tiemout and fail)");
+                            console.log("(The lookup should timemout and fail)");
 
                             console.log("");console.log("=============================");
                             console.log("");
