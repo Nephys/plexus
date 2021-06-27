@@ -68,6 +68,7 @@ node.on("broadcast", (message) => {
 - [X] Implement Item expiration
 - [X] Implement Item propagation
 - [ ] ~~Improve the storage system~~ Memory storage should be fine (at least for now)
+- [ ] Clean up code
 - [ ] Add documentation
 ###### * (WIP)
 
