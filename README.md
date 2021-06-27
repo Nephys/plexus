@@ -74,6 +74,8 @@ node.on("broadcast", (data) => {
 # **Documentation**
 >[Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
 
+>[Item](https://github.com/Nephys/plexus/blob/main/docs/item.md)
+
 \
 \
 [@Nephys](https://github.com/Nephys), 2021

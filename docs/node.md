@@ -61,7 +61,7 @@ node.on("broadcast", (data) => {
 ```
 
 #### node.store({ key, value })
-* `key`: _String_ _(Optional, Default: hash-of-value)_ The key used to find and store the value.
+* `key`: _String_ _(Optional, Default: hash-of-value)_ The key used to find and store the value on the network.
 * `value`: _Object_ The value to store on the network.
 
 \
