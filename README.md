@@ -67,7 +67,7 @@ node.on("broadcast", (message) => {
 - [X] Implement keep alive (ping oldest contacts to keep the UDP hole open)*
 - [X] Implement Item expiration
 - [X] Implement Item propagation
-- [ ] Improve the storage system
+- ~~[ ] Improve the storage system~~ Memory storage should be fine (at least for now)
 - [ ] Add documentation
 ###### * (WIP)
 
