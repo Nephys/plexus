@@ -16,8 +16,7 @@ let client_name = `${os.hostname()}_${port}`
 
 node.rpc.on("ready", () => {
     console.log(`client listening on ${node.self.name}`);
-    node.on("broadcast", (message) => {
-        let data = message.params.data;
+    node.on("broadcast", (data) => {
         if(data.type.toUpperCase() == "MESSAGE") {
             console.log(`[${data.metadata.sender}]: ${data.metadata.text}`);
         }

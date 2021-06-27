@@ -36,9 +36,7 @@ a.on("ready", () => {
         let status = a.connect({host: node.self.host, port: node.self.port});
         status.on("response", async (message, {host, port}) => {
             connections++;
-            node.once("broadcast", (message) => {
-                let data = message.params.data;
-                
+            node.once("broadcast", (data) => {
                 if (data == broadcast_data) {
                     listening_nodes++;
                     if(listening_nodes >= nodes.length) {

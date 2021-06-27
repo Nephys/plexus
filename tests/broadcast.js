@@ -4,16 +4,16 @@ let a = new Plexus.Node();
 let b = new Plexus.Node({port: 8081});
 let c = new Plexus.Node({port: 8082});
 
-a.on("broadcast", (message) => {
-    console.log(`[A] ${message.params.data}`);
+a.on("broadcast", (data) => {
+    console.log(`[A] ${data}`);
 });
 
-b.on("broadcast", (message) => {
-    console.log(`[B] ${message.params.data}`);
+b.on("broadcast", (data) => {
+    console.log(`[B] ${data}`);
 });
 
-c.on("broadcast", (message) => {
-    console.log(`[C] ${message.params.data}`);
+c.on("broadcast", (data) => {
+    console.log(`[C] ${data}`);
 });
 
 a.connect({host: b.self.host, port: b.self.port});

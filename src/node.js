@@ -21,10 +21,11 @@ class Node extends EventEmitter {
         peers = 20,                 //  (Default: 20)
 
 
-        //  Item expiration time
-        expire = 86400000,          //  (Default: 24h)
         //  Bucket refresh interval
         refresh = 3600000,          //  (Default: 1h)
+
+        //  Item expiration time
+        expire = 86400000,          //  (Default: 24h)
         //  Data replication interval
         replicate = 3600000,        //  (Default: 1h)
         //  Item republishing interval (only for the item publisher)
@@ -55,13 +56,69 @@ class Node extends EventEmitter {
             peers: peers
         });
 
-        //  RPC Message handler
-        this.bind_rpc_handlers();
-
         //  Storage Test
         this.storage = new Map();
+
+        //  Tasks
+        setInterval(this.on_refresh.bind(this), refresh);
+
+        setInterval(this.on_expire.bind(this, expire), expire);
+        setInterval(this.on_replicate.bind(this), replicate);
+        setInterval(this.on_republish.bind(this), republish);
+
+        //  RPC Message handler
+        this.bind_rpc_handlers();
     }
 
+
+    //  Tasks
+    on_refresh() {
+        let contacts = this.router.contacts;
+        contacts.map((c) => {
+            let request = new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}});
+            let handshake = this.rpc.send_message(request, {host: c.host, port: c.port});
+
+            handshake.on("response", (message, {host, port}) => {
+                let contact = new Contact({
+                    host: host,
+                    port: port,
+                    id: message.result.id,
+                    clock: new VectorClock({start: message.result.time})
+                });
+
+                this.router.update_contact(contact);
+                this.self.clock.update(contact.id);
+            });
+        });
+    }
+
+    on_expire(expire) {
+        for (let [key, item] of this.storage){
+            if(Date.now() >= item.timestamp + expire) {
+                this.storage.delete(key);
+            }
+        }
+    }
+
+    on_replicate() {
+        for (let [key, item] of this.storage){
+            if (item.publisher !== this.self.id) {
+                this.store({key, value: item.value});
+            }
+        }
+    }
+
+    on_republish(republish) {
+        for (let [key, item] of this.storage){
+            if(item.publisher == this.self.id && Date.now() >= item.timestamp + republish) {
+                this.store({key, value: item.value});
+            }
+        }
+    }
+
+
+    //  RPC & Network
+    //  Bind RPC requests to their own methods
     bind_rpc_handlers() {
         let handlers = [
             {"PING": this.on_ping},
@@ -79,8 +136,6 @@ class Node extends EventEmitter {
         });
     }
 
-    
-    //  RPC & Network
     //  Respond to PING requests with the node's ID and logical time
     on_ping(message, {host, port}) {
         let params = message.params;
@@ -148,7 +203,7 @@ class Node extends EventEmitter {
         this.self.clock.update(params.sender.id);
 
         //  Notify of the event
-        this.emit("broadcast", message);
+        this.emit("broadcast", params.data);
 
         let skip = params.list;
         let list = this.router.contacts.map((c) => {
@@ -214,7 +269,8 @@ class Node extends EventEmitter {
     store({key, value}) {
         this.self.clock.update(this.self.id);
         
-        let item = new Item({key: key, value: value, publisher: this.self.id, hash: this.self.hash});
+        let item = new Item({key: key, value: value, publisher: this.self.id, timestamp: Date.now(), hash: this.self.hash});
+        this.storage.set(item.key, item);
         
         let contacts = this.router.get_contacts_near(item.key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {
@@ -222,6 +278,8 @@ class Node extends EventEmitter {
             let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
             this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
+
+        return item;
     }
 
     //  Broadcast to the whole network
