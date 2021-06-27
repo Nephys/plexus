@@ -57,8 +57,7 @@ Broadcasting to the whole Network.
 node.broadcast({data: data});
 
 //  Handling incoming Broadcasts
-node.on("broadcast", (message) => {
-    let data = message.params.data;
+node.on("broadcast", (data) => {
     console.log(data);
 });
 ```
