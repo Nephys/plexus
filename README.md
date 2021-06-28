@@ -3,6 +3,15 @@
 
 >Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
 
+# **Contents**
+* [Testing](#testing)
+* [Quick Start](#quick-start)
+* [Storage](#storage)
+* [Communication](#communication)
+* [Documentation](#documentation)
+* [TODO](#todo)
+* [Support](#support-me-)
+
 # **Testing**
 ```
 npm run test
@@ -76,7 +85,7 @@ node.on("broadcast", (data) => {
 - [ ] Add documentation
 ###### * (WIP)
 
-# **Support me 🤝**
+# **Support Me 🤝**
 
 If you like the project and want to support me you can do so by donating any amout to one of the following addresses or by using it in your own projects and showing it to other developers.
 
