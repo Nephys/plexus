@@ -71,6 +71,7 @@ node.on("broadcast", (data) => {
 - [X] Implement Item propagation
 - [ ] ~~Improve the storage system~~ Memory storage should be fine (at least for now)
 - [ ] Clean up code
+- [ ] Finish implementing error handling using exceptions
 - [ ] Add documentation
 ###### * (WIP)
 
