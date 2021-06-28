@@ -6,24 +6,22 @@ class Item {
         value,
 
         publisher,
-        timestamp,
-
-        hash = { algorithm: "sha256", encoding: "hex" }
+        timestamp
     } = {}) {
         if(!value || !publisher || !timestamp) {
             throw new Error("Invalid item specification");
         }
 
         this.value = value;
-        this.key = key || this.create_hash(this.value, hash);
+        this.key = key || this.create_hash(this.value);
 
         this.publisher = publisher;
 
         this.timestamp = timestamp;
     }
 
-    create_hash(data, hash = { algorithm: "sha256", encoding: "hex" }) {
-        return crypto.createHash(hash.algorithm).update(data).digest(hash.encoding);
+    create_hash(data) {
+        return crypto.createHash("sha256").update(data).digest("hex");
     }
 }
 

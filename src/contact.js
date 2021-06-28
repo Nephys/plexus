@@ -7,14 +7,11 @@ class Contact {
         host = "127.0.0.1",
         port = 8080,
     
-        hash = { algorithm: "sha256", encoding: "hex" },
         id,
         clock = new VectorClock()
     } = {}) {
         this.host = host;
         this.port = port;
-
-        this.hash = hash
 
         this.id = id || this.generate_id();
 
@@ -23,7 +20,7 @@ class Contact {
 
     generate_id() {
         let seed = crypto.randomUUID({disableEntropyCache: true});
-        let hash = crypto.createHash(this.hash.algorithm).update(seed).digest(this.hash.encoding);
+        let hash = crypto.createHash("sha256").update(seed).digest("hex");
         return `0x${hash}`
     }
 

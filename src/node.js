@@ -12,8 +12,7 @@ class Node extends EventEmitter {
         host = "127.0.0.1",
         port = 8080,
         id,
-
-        hash = { algorithm: "sha256", encoding: "hex" },
+        
         
         //  The maximum amount of buckets to be stored in the router
         capacity = 160,             //  (Default: 160)
@@ -37,8 +36,6 @@ class Node extends EventEmitter {
         this.self = new Contact({
             host:host,
             port: port,
-
-            hash: hash,
 
             id: id
         });

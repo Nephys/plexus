@@ -7,9 +7,8 @@
 ```
 npm run test
 ```
-This test will create a 50-Node Local Mesh Network.
+**This test will create a 50-Node Local Mesh Network and then go through the 4 following steps**
 
-**The test consists of 4 steps**
 Step | Description
 ------------ | -------------
 Item lookup | Testing if nodes can find an item on the network
@@ -62,6 +61,10 @@ node.on("broadcast", (data) => {
 });
 ```
 
+# **Documentation**
+* [Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
+* [Item](https://github.com/Nephys/plexus/blob/main/docs/item.md)
+
 # **TODO**
 - [X] Implement keep alive (ping oldest contacts to keep the UDP hole open)*
 - [X] Implement Item expiration
@@ -71,9 +74,15 @@ node.on("broadcast", (data) => {
 - [ ] Add documentation
 ###### * (WIP)
 
-# **Documentation**
-* [Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
-* [Item](https://github.com/Nephys/plexus/blob/main/docs/item.md)
+# **Support me 🤝**
+
+If you like the project and want to support me you can do so by donating any amout to one of the following addresses or by using it in your own projects and showing it to other developers.
+
+Tank you! ❤️
+
+* ETH [0x882fc9954991eaaa4c8f2de9145e3135660a1680](https://etherscan.io/address/0x882fc9954991eaaa4c8f2de9145e3135660a1680)
+
+* BTC [bc1q3ehnqqmckv7g45hy8su65q88h6arnfy7ar2tgt](https://btc.com/bc1q3ehnqqmckv7g45hy8su65q88h6arnfy7ar2tgt)
 
 \
 \
