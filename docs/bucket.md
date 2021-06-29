@@ -8,14 +8,14 @@ Multiple buckets are used in the router to speed up the lookup process.
 * constructor
     * [new Bucket()](#new-itemoptions)
 * getters
-    * [size](#size)
+    * [bucket.size](#bucketsize)
 * methods
-    * [get_contacts()](#get_contacts)
-    * [get_contact(index)](#get_contactindex)
-    * [get_index(contact)](#get_indexcontact)
-    * [add_contact(contact)](#add_contactcontact)
-    * [remove_contact(contact)](#remove_contactcontact)
-    * [has_contact(contact)](#has_contactcontact)
+    * [bucket.get_contacts()](#bucketget_contacts)
+    * [bucket.get_contact(index)](#bucketget_contactindex)
+    * [bucket.get_index(contact)](#bucketget_indexcontact)
+    * [bucket.add_contact(contact)](#bucketadd_contactcontact)
+    * [bucket.remove_contact(contact)](#bucketremove_contactcontact)
+    * [bucket.has_contact(contact)](#buckethas_contactcontact)
 
 # **Constructor**
 
@@ -32,7 +32,7 @@ let bucket = new plexus.Bucket();
 
 # **Getters**
 
-#### size
+#### bucket.size
 
 \
 **Returns the amount of known contacts.**
@@ -43,7 +43,7 @@ let size = bucket.size;
 
 # **Methods**
 
-#### get_contacts()
+#### bucket.get_contacts()
 
 \
 **Returns the list of known contacts.**
@@ -52,7 +52,7 @@ let size = bucket.size;
 let contacts = bucket.get_contacts();
 ```
 
-#### get_contact(index)
+#### bucket.get_contact(index)
 
 \
 **Returns the contact stored at the specified index.**
@@ -61,7 +61,7 @@ let contacts = bucket.get_contacts();
 let head = bucket.get_contact(0);
 ```
 
-#### get_index(contact)
+#### bucket.get_index(contact)
 
 \
 **Gets the index of a contact.**
@@ -72,7 +72,7 @@ let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 let index = bucket.get_index(contact);
 ```
 
-#### add_contact(contact)
+#### bucket.add_contact(contact)
 
 \
 **Adds a contact to the bucket**
@@ -82,7 +82,7 @@ let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 bucket.add_contact(contact);
 ```
 
-#### remove_contact(contact)
+#### bucket.remove_contact(contact)
 
 \
 **Removes a contact from the bucket**
@@ -92,7 +92,7 @@ let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 bucket.remove_contact(contact);
 ```
 
-#### has_contact(contact)
+#### bucket.has_contact(contact)
 
 \
 **Checks if the contact is stored in the bucket**
