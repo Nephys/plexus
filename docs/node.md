@@ -4,14 +4,16 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
 
 # **Contents**
 
-* methods
+* constructor
     * [new Node(options)](#new-nodeoptions)
+* methods
     * [node.connect({ host, port })](#nodeconnect-host-port-)
     * [node.broadcast({ data })](#nodebroadcast-data-)
     * [node.store({ key, value, republish })](#nodestore-key-value-republish-)
     * [node.find({ key })](#nodefind-key-)
-
 * events
+
+# **Constructor**
 
 #### new Node(options)
 
@@ -34,6 +36,8 @@ const plexus = require("plexus");
 //  Node creation
 let node = new plexus.Node({host: "127.0.0.1", port: 8080});
 ```
+
+# **Methods**
 
 #### node.connect({ host, port })
 * `host`: _String_ Remote IP of the node to connect to.

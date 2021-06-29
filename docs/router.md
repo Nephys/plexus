@@ -6,8 +6,11 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
 
 # **Contents**
 
-* methods
+* constructor
     * [new Router(options)](#new-routeroptions)
+* methods
+
+# **Constructor**
 
 #### new Router(options)
 
@@ -16,3 +19,5 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
     * `rpc`: _RPC_ The remote procedure call class of the node.
     * `capacity`: _Integer_ The maximum amount of buckets to be stored in the router.
     * `peers`: _Integer_ The maximum amount of contacts to be stored per bucket.
+
+# **Methods**

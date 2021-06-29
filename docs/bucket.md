@@ -5,7 +5,15 @@ Multiple buckets are used in the router to speed up the lookup process.
 
 # **Contents**
 
-* methods
+* constructor
     * [new Bucket()](#new-itemoptions)
+* methods
+    * [get_contacts()](#get-contacts)
+
+# **Constructor**
 
 #### new Bucket()
+
+# **Methods**
+
+#### get_contacts()

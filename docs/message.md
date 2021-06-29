@@ -4,8 +4,11 @@ Messages are used by nodes to communicate with one another and exchange data ove
 
 # **Contents**
 
-* methods
+* constructor
     * [new Message(options)](#new-messageoptions)
+* methods
+
+# **Constructor**
 
 #### new Message(options)
 
@@ -17,3 +20,5 @@ Messages are used by nodes to communicate with one another and exchange data ove
     * **Response**
         * `result`: _Any_ The result of the invoked method.
         * `error`: _Error_ _(Optional)_ If any error occurs during the execution of the invoked method.
+
+# **Methods**
