@@ -41,7 +41,21 @@ let response = new plexus.Message({ result: "response", id: request.id });
 
 #### message.create_id()
 
+\
+**Creates a new ID for the message (request) to be used when responding.**
+```js
+//  Create a new message request ID
+message.id = message.create_id();
+```
+
 #### message.serialize()
+
+\
+**Converts the message into a new buffer to be sent over the network.**
+```js
+//  Serialize the message before sending
+let serialized = message.serialize();
+```
 
 #### message.is_request(parsed)
 
