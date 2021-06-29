@@ -22,12 +22,12 @@ class Node extends EventEmitter {
 
 
         //  Bucket refresh interval
-        refresh = 3600000,          //  (Default: 1h)
+        refresh = 25000,          //  (Default: 25s)
 
         //  Item expiration time
-        expire = 86400000,          //  (Default: 24h)
+        expire = 3600000,           //  (Default: 1h)
         //  Item republishing interval (only for the item publisher)
-        republish = 86400000,       //  (Default: 24h)
+        republish = 3600000,        //  (Default: 1h)
         //  Data replication interval
         replicate = 3600000         //  (Default: 1h)
     } = {}) {
