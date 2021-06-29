@@ -8,7 +8,7 @@ class Item {
         publisher,
         timestamp
     } = {}) {
-        if(!value || !publisher || !timestamp) {
+        if(value == undefined || publisher == undefined || timestamp == undefined) {
             throw new Error("Invalid item specification");
         }
 

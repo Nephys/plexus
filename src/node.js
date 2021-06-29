@@ -5,6 +5,7 @@ const Item = require("./item");
 const Message = require("./message");
 const Router = require("./router");
 const RPC = require("./rpc");
+const Storage = require("./storage");
 const VectorClock = require("./vector_clock");
 
 class Node extends EventEmitter {
@@ -53,8 +54,8 @@ class Node extends EventEmitter {
             peers: peers
         });
 
-        //  Storage Test
-        this.storage = new Map();
+        //  Storage
+        this.storage = new Storage();
 
         //  Tasks
         setInterval(this.on_refresh.bind(this), refresh);
@@ -96,9 +97,11 @@ class Node extends EventEmitter {
     on_expire(expire) {
         this.self.clock.update(this.self.id);
 
-        for (let [key, item] of this.storage){
+        let items = this.storage.get_items();
+        for (let i = 0; i < items.length; i++){
+            let item = items[i];
             if(Date.now() >= item.timestamp + expire) {
-                this.storage.delete(key);
+                this.storage.delete(item.key);
             }
         }
     }
@@ -107,11 +110,12 @@ class Node extends EventEmitter {
     on_republish(republish) {
         this.self.clock.update(this.self.id);
 
-        for (let [key, entry] of this.storage){
-            let item = new Item({key: key, value: entry.value, publisher: entry.publisher, timestamp: Date.now(), hash: this.self.hash});
+        let items = this.storage.get_republishable_items();
+        for (let i = 0; i < items.length; i++){
+            let item = new Item({key: items[i].key, value: items[i].value, publisher: items[i].publisher, timestamp: Date.now()});
 
-            if(entry.publisher == this.self.id && Date.now() >= entry.timestamp + republish) {
-                let contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
+            if(items[i].publisher == this.self.id && Date.now() >= items[i].timestamp + republish) {
+                let contacts = this.router.get_contacts_near(items[i].key, this.router.peers, Buffer.from(this.self.id));
                 contacts.map((contact) => {
                     //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
                     let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
@@ -125,11 +129,12 @@ class Node extends EventEmitter {
     on_replicate() {
         this.self.clock.update(this.self.id);
 
-        for (let [key, entry] of this.storage){
-            let item = new Item({key: key, value: entry.value, publisher: entry.publisher, timestamp: Date.now(), hash: this.self.hash});
+        let items = this.storage.get_items();
+        for (let i = 0; i < items.length; i++){
+            let item = new Item({key: items[i].key, value: items[i].value, publisher: items[i].publisher, timestamp: Date.now()});
 
-            if (entry.publisher !== this.self.id) {
-                let contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
+            if (items[i].publisher !== this.self.id) {
+                let contacts = this.router.get_contacts_near(items[i].key, this.router.peers, Buffer.from(this.self.id));
                 contacts.map((contact) => {
                     //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
                     let request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
@@ -216,7 +221,6 @@ class Node extends EventEmitter {
 
         let item = params.item;
         
-        //TODO Implement a better storage system
         this.storage.set(item.key, item);
     }
 
@@ -239,14 +243,6 @@ class Node extends EventEmitter {
                 this.rpc.send_message(request, {host: contact.host, port: contact.port});
             }
         });
-
-        let contact = new Contact({
-            host: host,
-            port: port,
-            id: params.sender.id,
-            clock: new VectorClock({start: params.sender.time})
-        });
-        this.router.update_contact(contact);
     }
 
 
@@ -292,8 +288,8 @@ class Node extends EventEmitter {
     store({key, value}) {
         this.self.clock.update(this.self.id);
         
-        let item = new Item({key: key, value: value, publisher: this.self.id, timestamp: Date.now(), hash: this.self.hash});
-        this.storage.set(item.key, item);
+        let item = new Item({key: key, value: value, publisher: this.self.id, timestamp: Date.now()});
+        this.storage.set(item.key, item, true);
         
         let contacts = this.router.get_contacts_near(item.key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {

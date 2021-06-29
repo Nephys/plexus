@@ -20,7 +20,7 @@
     * `port`: _Integer_ _(Default: 8080)_ UDP port of the node.
     * `capacity`: _Integer_ _(Default: 160)_ The maximum amount of buckets to be stored in the router.
     * `peers`: _Integer_ _(Default: 20)_ The maximum amount of contacts to be stored per bucket.
-    * `refresh`: _Integer_ _(Default: 3600000)_ Bucket refresh interval.
+    * `refresh`: _Integer_ _(Default: 3600000)_ Buckets refresh interval.
     * `expire`: _Integer_ _(Default: 86400000)_ Item expiration time.
     * `republish`: _Integer_ _(Default: 86400000)_ Item republishing interval (only for the item publisher).
     * `replicate`: _Integer_ _(Default: 3600000)_ Data replication interval.

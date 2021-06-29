@@ -4,12 +4,16 @@ const VectorClock = require("./vector_clock");
 
 class Contact {
     constructor({
-        host = "127.0.0.1",
-        port = 8080,
+        host,
+        port,
     
         id,
         clock = new VectorClock()
     } = {}) {
+        if(host == undefined || port == undefined) {
+            throw new Error("Invalid contact specification");
+        }
+
         this.host = host;
         this.port = port;
 

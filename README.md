@@ -76,12 +76,12 @@ node.on("broadcast", (data) => {
 * [Router](https://github.com/Nephys/plexus/blob/main/docs/router.md)
 
 # **TODO**
-- [X] Implement keep alive (ping oldest contacts to keep the UDP hole open)*
+- [X] Implement keep alive (ping contacts to keep the UDP hole open)*
 - [X] Implement Item expiration
 - [X] Implement Item propagation
-- [ ] ~~Improve the storage system~~ Memory storage should be fine (at least for now)
+- [X] Improve the storage system
 - [ ] Clean up code
-- [ ] Finish implementing error handling using exceptions
+- [X] Finish implementing error handling using exceptions
 - [ ] Add documentation
 ###### * (WIP)
 
