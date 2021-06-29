@@ -101,7 +101,7 @@ node.on("broadcast", (data) => {
 
 # **Support Me 🤝**
 
-If you like the project and want to support me you can do so by donating any amout to one of the following addresses or by using it in your own projects and showing it to other developers.
+If you like the project and want to support me you can do so by donating any amout to one of the following addresses or by using it in your own projects and sharing this repo.
 
 Tank you! ❤️
 
