@@ -1,11 +1,15 @@
 # **Router**
 
+The router is one of the most important parts of the network, its role is to structure the peer-to-peer network.
+
+Structuring the network to make it more reliable by allowing nodes to stay interconnected directly or inderectly even in the event of one or more nodes going offline.
+
 # **Contents**
 
-* public methods
+* methods
     * [new Router(options)](#new-routeroptions)
     
-* private methods
+* events
 
 #### new Router(options)
 

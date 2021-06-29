@@ -1,15 +1,15 @@
 # **Node**
 
+Nodes are the heart of the Plexus Network, they allow your application to connect and interact with the network.
+
 # **Contents**
 
-* public methods
+* methods
     * [new Node(options)](#new-nodeoptions)
     * [node.connect({ host, port })](#nodeconnect-host-port-)
     * [node.broadcast({ data })](#nodebroadcast-data-)
     * [node.store({ key, value })](#nodestore-key-value-)
     * [node.find({ key })](#nodefind-key-)
-
-* private methods
 
 * events
 

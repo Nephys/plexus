@@ -1,11 +1,13 @@
 # **Item**
 
+Items are used to store and retrieve data on the network.
+
 # **Contents**
 
-* public methods
+* methods
     * [new Item(options)](#new-itemoptions)
-    
-* private methods
+
+* events
 
 #### new Item(options)
 
