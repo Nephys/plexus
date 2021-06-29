@@ -1,5 +1,5 @@
 # **Plexus**
-[![License](https://img.shields.io/github/license/Nephys/plexus)](plexus/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/Nephys/plexus)](LICENSE)
 
 >Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
 
@@ -12,7 +12,7 @@
 * [Resources](#resources)
 * [TODO](#todo)
 * [Support](#support-me-)
-* [License](#plexus/blob/main/LICENSE)
+* [License](LICENSE)
 
 # **Testing**
 ```
@@ -73,10 +73,10 @@ node.on("broadcast", (data) => {
 ```
 
 # **Documentation**
-* [Node](plexus/blob/main/docs/node.md)
-* [Item](plexus/blob/main/docs/item.md)
-* [Message](plexus/blob/main/docs/message.md)
-* [Router](plexus/blob/main/docs/router.md)
+* [Node](docs/node.md)
+* [Item](docs/item.md)
+* [Message](docs/message.md)
+* [Router](docs/router.md)
 
 # **Resources**
 * [Kademlia Visualizer](https://kelseyc18.github.io/kademlia_vis/basics/1/)
