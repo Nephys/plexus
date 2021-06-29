@@ -18,6 +18,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
 * `options`:
     * `host`: _String_ _(Default: "127.0.0.1")_ Local IP of the node.
     * `port`: _Integer_ _(Default: 8080)_ UDP port of the node.
+    * `id`: _String_ The local node ID.
     * `capacity`: _Integer_ _(Default: 160)_ The maximum amount of buckets to be stored in the router.
     * `peers`: _Integer_ _(Default: 20)_ The maximum amount of contacts to be stored per bucket.
     * `refresh`: _Integer_ _(Default: 3600000)_ Buckets refresh interval.

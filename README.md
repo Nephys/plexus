@@ -73,6 +73,7 @@ node.on("broadcast", (data) => {
 # **Documentation**
 * [Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
 * [Item](https://github.com/Nephys/plexus/blob/main/docs/item.md)
+* [Message](https://github.com/Nephys/plexus/blob/main/docs/message.md)
 * [Router](https://github.com/Nephys/plexus/blob/main/docs/router.md)
 
 # **TODO**
