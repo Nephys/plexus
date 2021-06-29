@@ -7,6 +7,7 @@ Items are used to store and retrieve data on the network.
 * constructor
     * [new Item(options)](#new-itemoptions)
 * methods
+    * [item.create_hash(data)](#itemcreate_hashdata)
 
 # **Constructor**
 
@@ -18,4 +19,21 @@ Items are used to store and retrieve data on the network.
     * `publisher`: _String_ The ID of the node that published the Item on the network.
     * `timestamp`: _Integer_ Unix timestamp of the creation of the Item.
 
+\
+**Creates an Item to be stored on the network.**
+```js
+const plexus = require("plexus");
+
+let item = new plexus.Item({key: key, value: value, publisher: "id", timestamp: 0});
+```
+
 # **Methods**
+
+#### item.create_hash(data)
+
+\
+**Creates a hash of the input data.**
+```js
+//  Use the hash of the item's data as its key
+item.key = item.create_hash(item.value);
+```
