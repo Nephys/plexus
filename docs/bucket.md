@@ -7,6 +7,8 @@ Multiple buckets are used in the router to speed up the lookup process.
 
 * constructor
     * [new Bucket()](#new-itemoptions)
+* getters
+    * [size](#size)
 * methods
     * [get_contacts()](#get_contacts)
     * [get_contact(index)](#get_contactindex)
@@ -18,6 +20,10 @@ Multiple buckets are used in the router to speed up the lookup process.
 # **Constructor**
 
 #### new Bucket()
+
+# **Getters**
+
+#### size
 
 # **Methods**
 
