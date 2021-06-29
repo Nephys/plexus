@@ -1,5 +1,5 @@
 # **Plexus**
-[![License](https://img.shields.io/github/license/Nephys/plexus)](https://github.com/Nephys/plexus/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/Nephys/plexus)](plexus/blob/main/LICENSE)
 
 >Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
 
@@ -9,8 +9,10 @@
 * [Storage](#storage)
 * [Communication](#communication)
 * [Documentation](#documentation)
+* [Resources](#resources)
 * [TODO](#todo)
 * [Support](#support-me-)
+* [License](#plexus/blob/main/LICENSE)
 
 # **Testing**
 ```
@@ -71,10 +73,16 @@ node.on("broadcast", (data) => {
 ```
 
 # **Documentation**
-* [Node](https://github.com/Nephys/plexus/blob/main/docs/node.md)
-* [Item](https://github.com/Nephys/plexus/blob/main/docs/item.md)
-* [Message](https://github.com/Nephys/plexus/blob/main/docs/message.md)
-* [Router](https://github.com/Nephys/plexus/blob/main/docs/router.md)
+* [Node](plexus/blob/main/docs/node.md)
+* [Item](plexus/blob/main/docs/item.md)
+* [Message](plexus/blob/main/docs/message.md)
+* [Router](plexus/blob/main/docs/router.md)
+
+# **Resources**
+* [Kademlia Visualizer](https://kelseyc18.github.io/kademlia_vis/basics/1/)
+* [Kademlia Design Specification](http://xlattice.sourceforge.net/components/protocol/kademlia/specs.html)
+* [Kademlia: A Peer-to-peer Information System Based on the XOR Metric](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf)
+* [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 
 # **TODO**
 - [X] Implement keep alive (ping contacts to keep the UDP hole open)*
