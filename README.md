@@ -74,9 +74,14 @@ node.on("broadcast", (data) => {
 
 # **Documentation**
 * [Node](docs/node.md)
+* [Bucket](docs/bucket.md)
+* [Contact](docs/contact.md)
 * [Item](docs/item.md)
 * [Message](docs/message.md)
 * [Router](docs/router.md)
+* [RPC](docs/rpc.md)
+* [Storage](docs/storage.md)
+* [Vector Clock](docs/vector_clock.md)
 
 # **Resources**
 * [Kademlia Visualizer](https://kelseyc18.github.io/kademlia_vis/basics/1/)
