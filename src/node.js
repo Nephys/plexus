@@ -285,11 +285,11 @@ class Node extends EventEmitter {
     }
 
     //  Store data on the network
-    store({key, value}) {
+    store({key, value, republish = false}) {
         this.self.clock.update(this.self.id);
         
         let item = new Item({key: key, value: value, publisher: this.self.id, timestamp: Date.now()});
-        this.storage.set(item.key, item, true);
+        this.storage.set(item.key, item, republish);
         
         let contacts = this.router.get_contacts_near(item.key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {

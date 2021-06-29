@@ -8,7 +8,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
     * [new Node(options)](#new-nodeoptions)
     * [node.connect({ host, port })](#nodeconnect-host-port-)
     * [node.broadcast({ data })](#nodebroadcast-data-)
-    * [node.store({ key, value })](#nodestore-key-value-)
+    * [node.store({ key, value, republish })](#nodestore-key-value-republish-)
     * [node.find({ key })](#nodefind-key-)
 
 * events
@@ -61,9 +61,10 @@ node.on("broadcast", (data) => {
 });
 ```
 
-#### node.store({ key, value })
+#### node.store({ key, value, republish })
 * `key`: _String_ _(Optional, Default: hash-of-value)_ The key used to find and store the value on the network.
 * `value`: _Object_ The value to store on the network.
+* `republish`: _Boolean_ _(Optional, Default: false)_ Whether or not to republish previously published items after they expire.
 
 \
 **Stores data on the Network.**
