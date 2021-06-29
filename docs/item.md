@@ -7,8 +7,6 @@ Items are used to store and retrieve data on the network.
 * methods
     * [new Item(options)](#new-itemoptions)
 
-* events
-
 #### new Item(options)
 
 * `options`:

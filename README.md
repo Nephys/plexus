@@ -44,7 +44,7 @@ node.connect({host: "remote_ip", port: remote_port});
 Storing and retrieving data on the Network.
 ```js
 //  Storing data
-let item = node.store({key: key, value: value});   //  If no key is provided it will default to the hash of the value stored
+let item = node.store({key: key, value: value, republish: true});   //  If no key is provided it will default to the hash of the value stored
 
 //  Retrieving data
 let lookup = node.find({key: key});

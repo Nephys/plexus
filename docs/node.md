@@ -70,7 +70,7 @@ node.on("broadcast", (data) => {
 **Stores data on the Network.**
 ```js
 //  Storing data
-let item = node.store({key: key, value: value});
+let item = node.store({key: key, value: value, republish: true});
 ```
 
 #### node.find({ key })

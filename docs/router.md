@@ -8,8 +8,6 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
 
 * methods
     * [new Router(options)](#new-routeroptions)
-    
-* events
 
 #### new Router(options)
 

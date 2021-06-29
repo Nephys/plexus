@@ -7,8 +7,6 @@ Messages are used by nodes to communicate with one another and exchange data ove
 * methods
     * [new Message(options)](#new-messageoptions)
 
-* events
-
 #### new Message(options)
 
 * `options`:
