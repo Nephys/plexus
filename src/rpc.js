@@ -152,8 +152,8 @@ class RPC extends EventEmitter {
 
     //  Returns the type of the message (REQUEST, RESPONSE or UNKNOWN)
     message_type(message) {
-        let is_request = !!(message.method && message.params);
-        let is_response = !!((message.result != null) || message.error);
+        let is_request = !!(message.method !== undefined && message.params !== undefined);
+        let is_response = !!(message.id && ((message.result !== undefined) || message.error));
 
         let type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
         return type;

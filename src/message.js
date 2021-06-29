@@ -2,6 +2,12 @@ const crypto = require("crypto");
 
 const VERSION = "2.0";
 
+const MESSAGE_TYPES = {
+    REQUEST: 0,
+    RESPONSE: 1,
+    UNKNOWN: -1
+}
+
 class Message {
     constructor({
         id,
@@ -15,17 +21,19 @@ class Message {
         this.jsonrpc = VERSION;
         this.id = id || this.create_id();
 
-        let spec = {id, method, params, result, error};
-        if(this.is_request(spec)) {
-            this.method = spec.method.toUpperCase();
-            this.params = spec.params;
-        }else if(this.is_response(spec)) {
-            this.result = spec.result;
+        let specs = {id, method, params, result, error};
+        let type = this.message_type(specs);
+        
+        if(type == MESSAGE_TYPES.REQUEST) {
+            this.method = specs.method.toUpperCase();
+            this.params = specs.params;
+        }else if(type == MESSAGE_TYPES.RESPONSE) {
+            this.result = specs.result;
 
-            if(spec.error) {
+            if(specs.error) {
                 this.error = {
                     code: -32603,
-                    message: spec.error.message
+                    message: specs.error.message
                 }
             }
         }else {
@@ -41,12 +49,13 @@ class Message {
         return Buffer.from(JSON.stringify(this), "utf-8");
     }
 
-    is_request(parsed) {
-        return !!(parsed.method && parsed.params);
-    }
+    //  Returns the type of the message (REQUEST, RESPONSE or UNKNOWN)
+    message_type(specs) {
+        let is_request = !!(specs.method !== undefined && specs.params !== undefined);
+        let is_response = !!(specs.id && ((specs.result !== undefined) || specs.error));
 
-    is_response(parsed) {
-        return !!(parsed.id && ((parsed.result !== undefined) || parsed.error));
+        let type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
+        return type;
     }
 }
 

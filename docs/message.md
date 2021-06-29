@@ -9,8 +9,7 @@ Messages are used by nodes to communicate with one another and exchange data ove
 * methods
     * [message.create_id()](#messagecreate_id)
     * [message.serialize()](#messageserialize)
-    * [message.is_request(parsed)](#messageis_requestparsed)
-    * [message.is_response(parsed)](#messageis_responseparsed)
+    * [message.message_type(specs)](#messagemessage_typespecs)
 
 # **Constructor**
 
@@ -57,6 +56,13 @@ message.id = message.create_id();
 let serialized = message.serialize();
 ```
 
-#### message.is_request(parsed)
+#### message.message_type(specs)
 
-#### message.is_response(parsed)
+* `specs`: _Object_ The message's options.
+
+\
+**Returns the type of the message (REQUEST, RESPONSE or UNKNOWN).**
+```js
+let specs = { method: "remote method", params: {} }
+let type = message.message_type(specs);
+```
