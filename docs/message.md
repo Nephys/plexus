@@ -7,6 +7,10 @@ Messages are used by nodes to communicate with one another and exchange data ove
 * constructor
     * [new Message(options)](#new-messageoptions)
 * methods
+    * [message.create_id()](#messagecreate_id)
+    * [message.serialize()](#messageserialize)
+    * [message.is_request(parsed)](#messageis_requestparsed)
+    * [message.is_response(parsed)](#messageis_responseparsed)
 
 # **Constructor**
 
@@ -21,4 +25,24 @@ Messages are used by nodes to communicate with one another and exchange data ove
         * `result`: _Any_ The result of the invoked method.
         * `error`: _Error_ _(Optional)_ If any error occurs during the execution of the invoked method.
 
+\
+**Creates a new Message to be sent over the network.**
+```js
+const plexus = require("plexus");
+
+//  Create a request
+let request = new plexus.Message({ method: "remote method", params: {} });
+
+//  Create a response
+let response = new plexus.Message({ result: "response", id: request.id });
+```
+
 # **Methods**
+
+#### message.create_id()
+
+#### message.serialize()
+
+#### message.is_request(parsed)
+
+#### message.is_response(parsed)
