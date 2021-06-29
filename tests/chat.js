@@ -1,6 +1,6 @@
 const util = require("util");
 const os = require("os");
-const Plexus = require("../index");
+const plexus = require("../index");
 
 const stdin = process.stdin;
 const stdout = process.stdout;
@@ -10,7 +10,7 @@ stdin.setEncoding("utf8");
 
 let remote = null;
 let port = Math.floor(Math.random() * 6000 + 1);
-let node = new Plexus.Node({port: port});
+let node = new plexus.Node({port: port});
 
 let client_name = `${os.hostname()}_${port}`
 

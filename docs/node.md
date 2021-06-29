@@ -28,10 +28,10 @@
 \
 **Creates a new Node instance.**
 ```js
-const Plexus = require("Plexus");
+const plexus = require("plexus");
 
 //  Node creation
-let node = new Plexus.Node({host: "127.0.0.1", port: 8080});
+let node = new plexus.Node({host: "127.0.0.1", port: 8080});
 ```
 
 #### node.connect({ host, port })

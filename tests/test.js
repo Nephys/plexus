@@ -1,8 +1,8 @@
 const EventEmitter = require("events");
 
-const Plexus = require("../index");
+const plexus = require("../index");
 
-let a = new Plexus.Node();
+let a = new plexus.Node();
 
 let node_count = 50;
 let nodes = [];
@@ -12,7 +12,7 @@ console.log(`Running local selftest with ${node_count} nodes`);
 console.log(`Setting up nodes...`);
 let start = a.self.port + 1;
 while(nodes.length < node_count) {
-    let node = new Plexus.Node({port: start++});
+    let node = new plexus.Node({port: start++});
     
     let previous_node = nodes[nodes.length - 1];
     if(previous_node) {

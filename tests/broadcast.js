@@ -1,8 +1,8 @@
-const Plexus = require("../index");
+const plexus = require("../index");
 
-let a = new Plexus.Node();
-let b = new Plexus.Node({port: 8081});
-let c = new Plexus.Node({port: 8082});
+let a = new plexus.Node();
+let b = new plexus.Node({port: 8081});
+let c = new plexus.Node({port: 8082});
 
 a.on("broadcast", (data) => {
     console.log(`[A] ${data}`);

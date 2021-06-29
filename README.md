@@ -29,10 +29,10 @@ Non existent item lookup | Testing if nodes dont find non existent data on the n
 # **Quick Start**
 Creating a Plexus Node and joining the Mesh Network.
 ```js
-const Plexus = require("Plexus");
+const plexus = require("plexus");
 
 //  Node creation
-let node = new Plexus.Node({host: "127.0.0.1", port: 8080});    //  By default the host and port are 127.0.0.1:8080
+let node = new plexus.Node({host: "127.0.0.1", port: 8080});    //  By default the host and port are 127.0.0.1:8080
 
 //  Join the network
 node.connect({host: "remote_ip", port: remote_port});
