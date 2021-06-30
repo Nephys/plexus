@@ -74,4 +74,18 @@ storage.delete("key");
 
 #### storage.get_republishable_items()
 
+\
+**Returns the list of items to republish after expiration.**
+```js
+//  Get the items to republish
+let items = storage.get_republishable_items();
+```
+
 #### storage.get_items()
+
+\
+**Returns the list of items stored.**
+```js
+//  Get the items stored
+let items = storage.get_items();
+```
