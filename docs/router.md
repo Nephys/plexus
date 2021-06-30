@@ -18,6 +18,9 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
     * [router.to_head(contact, bucket)](#routerto_headcontact-bucket)
     * [router.to_tail(contact, bucket)](#routerto_tailcontact-bucket)
     * [router.ping_head(contact, bucket)](#routerping_headcontact-bucket)
+    * [router.get_contacts_near(buffer, limit, sender)](#routerget_contacts_nearbuffer-limit-sender)
+    * [router.has_contact_id(id)](#routerhas_contact_idid)
+    * [router.get_contact(id)](#routerget_contactid)
 
 # **Constructor**
 
@@ -109,6 +112,8 @@ router.update_contact(contact);
 ```
 
 #### router.to_head(contact, bucket)
+* `contact`: _Contact_ Contact to move to the head of the bucket.
+* `bucket`: _Bucket_ Bucket in which to move the contact.
 
 \
 **Moves the contact to the head of the specified bucket.**
@@ -127,6 +132,8 @@ router.to_head(contact, bucket)
 ```
 
 #### router.to_tail(contact, bucket)
+* `contact`: _Contact_ Contact to move to the tail of the bucket.
+* `bucket`: _Bucket_ Bucket in which to move the contact.
 
 \
 **Moves the contact to the tail of the specified bucket.**
@@ -145,6 +152,8 @@ router.to_tail(contact, bucket)
 ```
 
 #### router.ping_head(contact, bucket)
+* `contact`: _Contact_ Contact to replace the head of the bucket with if it is unreachable.
+* `bucket`: _Bucket_ Bucket in which to move the contact.
 
 \
 **Replaces the contact at head of the specified bucket with the new contact if it does not respond (no longer online or unreachable).**
@@ -160,4 +169,37 @@ let bucket = new plexus.Bucket();
 
 //  Replace if head is unreachable
 router.ping_head(contact, bucket)
+```
+
+#### router.get_contacts_near(buffer, limit, sender)
+* `buffer`: _Buffer_ Buffer to calculate the XOR distance from.
+* `limit`: _Integer_ The maximum number of contacts to return.
+* `sender`: _Buffer_ Buffer to calculate the XOR distance to.
+
+\
+**Returns a list of the nearest contacts from the specified buffer.**
+```js
+//  The local node is 0xa45681de963cbfb2e841d2c94d450312347x3b235fb70fb27f2f69285ce481ce
+//  We want a list of the 20 closest known contacts to 0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed
+let contacts = router.get_contacts_near(Buffer.from("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed"), 20, Buffer.from("0xa45681de963cbfb2e841d2c94d450312347x3b235fb70fb27f2f69285ce481ce"));
+```
+
+#### router.has_contact_id(id)
+* `id`: _String_ The ID of the contact to look for.
+
+\
+**Checks if the router already contains a contact with the specified ID.**
+```js
+//  Returns true if the router contain a contact with that ID
+let exists = router.has_contact_id("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
+```
+
+#### router.get_contact(id)
+* `id`: _String_ The ID of the contact to look for.
+
+\
+**Returns a contact with the specified ID if the router contains one.**
+```js
+//  If contact is null the router doesn't contain any contacts with that ID
+let contact = router.get_contact("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
 ```

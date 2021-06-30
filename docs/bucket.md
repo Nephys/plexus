@@ -75,7 +75,7 @@ let index = bucket.get_index(contact);
 #### bucket.add_contact(contact)
 
 \
-**Adds a contact to the bucket**
+**Adds a contact to the bucket.**
 ```js
 let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 
@@ -85,7 +85,7 @@ bucket.add_contact(contact);
 #### bucket.remove_contact(contact)
 
 \
-**Removes a contact from the bucket**
+**Removes a contact from the bucket.**
 ```js
 let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 
@@ -95,7 +95,7 @@ bucket.remove_contact(contact);
 #### bucket.has_contact(contact)
 
 \
-**Checks if the contact is stored in the bucket**
+**Checks if the contact is stored in the bucket.**
 ```js
 let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 
