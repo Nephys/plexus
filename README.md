@@ -46,11 +46,13 @@ npm run broadcast
 //  Expected output:
 
 [A] b speaking
+[C] b speaking
+[B] a speaking
 [B] c speaking
 [C] a speaking
 [A] c speaking
-[C] b speaking
 [A] b speaking again
+[C] b speaking again
 [B] a speaking again
 [B] c speaking again
 [C] a speaking again
