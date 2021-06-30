@@ -7,6 +7,17 @@ The RPC allows the node to connect with other nodes, communicate with them as we
 * constructor
     * [new RPC(options)](#new-rpcoptions)
 * methods
+    * [rpc.create_id()](#rpccreate_id)
+    * [rpc.error_handler(error)](#rpcerror_handlererror)
+    * [rpc.message_handler(bytes, rinfo)](#rpcmessage_handlerbytes-rinfo)
+    * [rpc.send_request({host, port}, id)](#rpcsend_requesthost-port-id)
+    * [rpc.send_acknowledge({host, port}, id)](#rpcsend_acknowledgehost-port-id)
+    * [rpc.on_request({host, port}, bytes)](#rpcon_requesthost-port-bytes)
+    * [rpc.on_acknowledge({host, port}, bytes)](#rpcon_acknowledgehost-port-bytes)
+    * [rpc.on_message({host, port}, bytes)](#rpcon_messagehost-port-bytes)
+    * [rpc.message_type(message)](#rpcmessage_typemessage)
+    * [rpc.handshake({host, port}, attempts, timeout)](#rpchandshakehost-port-attempts-timeout)
+    * [rpc.send_message(message, {host, port}, attempts, timeout)](#rpcsend_messagemessage-host-port-attempts-timeout)
 
 # **Constructor**
 
