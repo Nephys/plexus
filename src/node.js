@@ -263,6 +263,8 @@ class Node extends EventEmitter {
             let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
             
             handshake.on("response", (m, {h, p}) => {
+                this.self.clock.update(contact.id);
+
                 recipients = m.result;
                 contacts = contacts.filter((c) => {
                     return !recipients.map((r) => {
@@ -289,6 +291,8 @@ class Node extends EventEmitter {
             let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
 
             handshake.on("response", (message, {host, port}) => {
+                this.self.clock.update(contact.id);
+
                 if(!found) {
                     found = true;
                     emitter.emit("found", message.result);
@@ -356,6 +360,8 @@ class Node extends EventEmitter {
             let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
             
             handshake.on("response", (m, {h, p}) => {
+                this.self.clock.update(contact.id);
+                
                 recipients = m.result;
                 contacts = contacts.filter((c) => {
                     return !recipients.map((r) => {

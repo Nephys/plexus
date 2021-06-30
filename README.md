@@ -121,13 +121,13 @@ node.on("broadcast", (data) => {
 * [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 
 # **TODO**
-- [X] Implement keep alive (ping contacts to keep the UDP hole open)*
-- [X] Implement Item expiration
-- [X] Implement Item propagation
-- [X] Improve the storage system
-- [ ] Clean up code
-- [X] Finish implementing error handling using exceptions
-- [X] Add documentation
+- [X] ~~Implement keep alive (ping contacts to keep the UDP hole open)*~~
+- [X] ~~Implement Item expiration~~
+- [X] ~~Implement Item propagation~~
+- [X] ~~Improve the storage system~~
+- [X] ~~Clean up code~~
+- [X] ~~Finish implementing error handling using exceptions~~
+- [X] ~~Add documentation~~
 ###### * (WIP)
 
 # **Support Me 🤝**
