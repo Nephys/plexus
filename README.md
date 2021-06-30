@@ -127,7 +127,7 @@ node.on("broadcast", (data) => {
 - [X] Improve the storage system
 - [ ] Clean up code
 - [X] Finish implementing error handling using exceptions
-- [ ] Add documentation
+- [X] Add documentation
 ###### * (WIP)
 
 # **Support Me 🤝**
