@@ -27,8 +27,8 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
 #### new Router(options)
 
 * `options`:
-    * `contact`: _Contact_ The node's local contact informations.
-    * `rpc`: _RPC_ The remote procedure call class of the node.
+    * `contact`: [_Contact_](contact.md) The node's local contact informations.
+    * `rpc`: [_RPC_](rpc.md) The remote procedure call class of the node.
     * `capacity`: _Integer_ The maximum amount of buckets to be stored in the router.
     * `peers`: _Integer_ The maximum amount of contacts to be stored per bucket.
 
@@ -85,8 +85,8 @@ let distance = router.distance(Buffer.from(contact0.id), Buffer.from(contact1.id
 ```
 
 #### router.get_bucket_index(contact0, contact1)
-* `contact0`: _Contact_ Contact to calculate the XOR distance to.
-* `contact1`: _Contact_ Contact to calculate the XOR distance from.
+* `contact0`: [_Contact_](contact.md) Contact to calculate the XOR distance to.
+* `contact1`: [_Contact_](contact.md) Contact to calculate the XOR distance from.
 
 \
 **Returns the bucket index of a contact based on its distance to another contact (generally the node's local contact).**
@@ -95,7 +95,7 @@ let bucket_index = this.get_bucket_index(node.self, contact);
 ```
 
 #### router.update_contact(contact)
-* `contact`: _Contact_ Contact to add, remove or update with a newer verion.
+* `contact`: [_Contact_](contact.md) Contact to add, remove or update with a newer verion.
 
 \
 **Updates the list of contacts (add new, update order, replace old).**
@@ -112,8 +112,8 @@ router.update_contact(contact);
 ```
 
 #### router.to_head(contact, bucket)
-* `contact`: _Contact_ Contact to move to the head of the bucket.
-* `bucket`: _Bucket_ Bucket in which to move the contact.
+* `contact`: [_Contact_](contact.md) Contact to move to the head of the bucket.
+* `bucket`: [_Bucket_](bucket.md) Bucket in which to move the contact.
 
 \
 **Moves the contact to the head of the specified bucket.**
@@ -132,8 +132,8 @@ router.to_head(contact, bucket)
 ```
 
 #### router.to_tail(contact, bucket)
-* `contact`: _Contact_ Contact to move to the tail of the bucket.
-* `bucket`: _Bucket_ Bucket in which to move the contact.
+* `contact`: [_Contact_](contact.md) Contact to move to the tail of the bucket.
+* `bucket`: [_Bucket_](bucket.md) Bucket in which to move the contact.
 
 \
 **Moves the contact to the tail of the specified bucket.**
@@ -152,8 +152,8 @@ router.to_tail(contact, bucket)
 ```
 
 #### router.ping_head(contact, bucket)
-* `contact`: _Contact_ Contact to replace the head of the bucket with if it is unreachable.
-* `bucket`: _Bucket_ Bucket in which to move the contact.
+* `contact`: [_Contact_](contact.md) Contact to replace the head of the bucket with if it is unreachable.
+* `bucket`: [_Bucket_](bucket.md) Bucket in which to move the contact.
 
 \
 **Replaces the contact at head of the specified bucket with the new contact if it does not respond (no longer online or unreachable).**

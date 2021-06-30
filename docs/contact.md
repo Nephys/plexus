@@ -1,6 +1,6 @@
 # **Contact**
 
-Contacts are used to store data about nodes such as their address and port needed for communication, their ID as well as their local logical clock.
+Contacts are used to store data about nodes such as their address and port needed for communication, their ID as well as their local logical [clock](vector_clock.md).
 
 # **Contents**
 
@@ -19,7 +19,7 @@ Contacts are used to store data about nodes such as their address and port neede
     * `host`: _String_ IP address of the node.
     * `port`: _Integer_ UDP port of the node.
     * `id`: _String_ _(Optional, if none is provided one will be generated)_ The node ID.
-    * `clock`: _VectorClock_ _(Optional, if none is provided one will be created and start at time = 0)_ The node's Vector Clock.
+    * `clock`: [_VectorClock_](vector_clock.md) _(Optional, if none is provided one will be created and start at time = 0)_ The node's Vector Clock.
 
 \
 **Creates a new Contact.**

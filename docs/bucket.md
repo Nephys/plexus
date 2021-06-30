@@ -1,7 +1,7 @@
 # **Bucket**
 
 Buckets are used to store a finite amount of contact informations about other nodes.
-Multiple buckets are used in the router to speed up the lookup process.
+Multiple buckets are used in the [router](router.md) to speed up the lookup process.
 
 # **Contents**
 
@@ -53,6 +53,7 @@ let contacts = bucket.get_contacts();
 ```
 
 #### bucket.get_contact(index)
+* `index`: _Integer_ The index of the contact to look for.
 
 \
 **Returns the contact stored at the specified index.**
@@ -62,6 +63,7 @@ let head = bucket.get_contact(0);
 ```
 
 #### bucket.get_index(contact)
+* `contact`: [_Contact_](contact.md) The contact of which to get the index.
 
 \
 **Gets the index of a contact.**
@@ -73,6 +75,7 @@ let index = bucket.get_index(contact);
 ```
 
 #### bucket.add_contact(contact)
+* `contact`: [_Contact_](contact.md) The contact to add to the bucket.
 
 \
 **Adds a contact to the bucket.**
@@ -83,6 +86,7 @@ bucket.add_contact(contact);
 ```
 
 #### bucket.remove_contact(contact)
+* `contact`: [_Contact_](contact.md) The contact to remove from the bucket.
 
 \
 **Removes a contact from the bucket.**
@@ -93,6 +97,7 @@ bucket.remove_contact(contact);
 ```
 
 #### bucket.has_contact(contact)
+* `contact`: [_Contact_](contact.md) The contact to look for.
 
 \
 **Checks if the contact is stored in the bucket.**
