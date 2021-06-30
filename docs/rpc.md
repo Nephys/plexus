@@ -41,15 +41,93 @@ let rpc = new plexus.RPC();
 
 \
 **Creates a pracket ID.**
+```js
+//  Create and ID for the packet to send
+let id = rpc.create_id();
+```
 
 #### rpc.send_request({host, port}, id)
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+* `id`: _String_ Request ID.
+
+\
+**Sends a request packet.**
+```js
+let host = "127.0.0.1";
+let port = 8080;
+
+let id = rpc.create_id();
+
+rpc.send_request({host, port}, id);
+```
 
 #### rpc.send_acknowledge({host, port}, id)
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+* `id`: _String_ Request ID.
 
-#### rpc.on_request({host, port}, bytes)
+\
+**Sends an acknowledgement packet.**
+```js
+let host = "127.0.0.1";
+let port = 8080;
+
+//  Incoming request with ID = 63b8fa2e7d0af923fb0505340bcad6a5
+let id = "63b8fa2e7d0af923fb0505340bcad6a5";
+
+rpc.send_acknowledge({host, port}, id);
+```
 
 #### rpc.message_type(message)
+* `message`: [_Message_](message.md) The messsage to get the type from.
+
+\
+**Returns the type of a message (REQUEST, RESPONSE or UNKNOWN).**
+```js
+//  Create a request
+let request = new plexus.Message({ method: "remote method", params: {} });
+
+//  Get the type of the message
+let type = rpc.message_type(request);
+console.log(type);  //  REQUEST (0)
+```
 
 #### rpc.handshake({host, port}, attempts, timeout)
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+* `attempts`: _Integer_ _(Default: 60)_ The amount of requests to send.
+* `timeout`: _Integer_ _(Default: 1000)_ The interval between requests.
+
+\
+**Initiates a handshake negotiation with a remote node.**
+```js
+let handshake = rpc.handshake({host, port}, attempts, timeout);
+
+handshake.on("connected", () => {
+    console.log("connected");
+});
+
+handshake.on("timeout", () => {
+    console.log("timed out");
+});
+```
 
 #### rpc.send_message(message, {host, port}, attempts, timeout)
+* `message`: [_Message_](message.md) The messsage to send to the remote node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+* `attempts`: _Integer_ _(Default: 60)_ The amount of requests to send.
+* `timeout`: _Integer_ _(Default: 1000)_ The interval between requests.
+
+\
+**Sends a message to a remote node.**
+```js
+let request = new plexus.Message({ method: "remote method", params: {} });
+
+let handshake = rpc.send_message(request, {host, port});
+
+handshake.on("response", (message, {host, port}) => {
+    console.log("request got a response");
+});
+```
