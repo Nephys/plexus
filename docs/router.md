@@ -11,7 +11,7 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
 * getters
     * [router.size](#routersize)
 * methods
-    * [router.distance(buffer0, buffer1)](#routerdistancebuffer0buffer1)
+    * [router.distance(buffer0, buffer1)](#routerdistancebuffer0-buffer1)
 
 # **Constructor**
 
