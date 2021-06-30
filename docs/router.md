@@ -13,6 +13,8 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
     * [router.contacts](#routercontacts)
 * methods
     * [router.distance(buffer0, buffer1)](#routerdistancebuffer0-buffer1)
+    * [router.get_bucket_index(contact0, contact1)](#routerget_bucket_indexcontact0-contact1)
+    * [router.update_contact(contact)](#routerupdate_contactcontact)
 
 # **Constructor**
 
