@@ -21,7 +21,7 @@ b.connect({host: a.self.host, port: a.self.port});
 c.connect({host: b.self.host, port: b.self.port});
 
 async function broadcast() {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 2500));
     a.broadcast({data: "a speaking"});
     b.broadcast({data: "b speaking"});
     c.broadcast({data: "c speaking"});

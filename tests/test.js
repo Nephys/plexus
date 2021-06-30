@@ -36,7 +36,7 @@ a.on("ready", () => {
         let status = a.connect({host: node.self.host, port: node.self.port});
         status.on("response", async (message, {host, port}) => {
             connections++;
-            node.once("broadcast", (data) => {
+            node.on("broadcast", (data) => {
                 if (data == broadcast_data) {
                     listening_nodes++;
                     if(listening_nodes >= nodes.length) {
@@ -46,8 +46,12 @@ a.on("ready", () => {
             });
 
             if(connections >= nodes.length) {
-                a.store({key: "key", value: "value"});
-                a.store({value: "hashed_value"});
+                let items = [
+                    a.store({key: "key", value: "value"}),
+                    a.store({value: "hashed_value"})
+                ];
+                console.log(`Stored items`);
+                console.log(items);
                 await new Promise((resolve) => setTimeout(resolve, 2500));
 
                 //  Item lookup
