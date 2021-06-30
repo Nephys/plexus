@@ -16,6 +16,10 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
     * [router.get_bucket_index(contact0, contact1)](#routerget_bucket_indexcontact0-contact1)
     * [router.update_contact(contact)](#routerupdate_contactcontact)
 
+    * [router.to_head(contact, bucket)](#routerto_headcontact-bucket)
+    * [router.to_tail(contact, bucket)](#routerto_tailcontact-bucket)
+    * [router.ping_head(contact, bucket)](#routerping_headcontact-bucket)
+
 # **Constructor**
 
 #### new Router(options)
@@ -38,7 +42,7 @@ let RPC = new RPC({
 });
 
 //  Router creation
-let router = new Router({
+let router = new plexus.Router({
     contact: contact,
     rpc: RPC,
     capacity: 160,
@@ -94,13 +98,67 @@ let bucket_index = this.get_bucket_index(node.self, contact);
 \
 **Updates the list of contacts (add new, update order, replace old).**
 ```js
-let contact = new Contact({
+let contact = new plexus.Contact({
     host: host,
     port: port,
     id: id,
-    clock: new VectorClock()
+    clock: new plexus.VectorClock()
 });
 
 //  Add the contact if new, update if already known or ignore if not valid
 router.update_contact(contact);
+```
+
+#### router.to_head(contact, bucket)
+
+\
+**Moves the contact to the head of the specified bucket.**
+```js
+let contact = new plexus.Contact({
+    host: host,
+    port: port,
+    id: id,
+    clock: new plexus.VectorClock()
+});
+
+let bucket = new plexus.Bucket();
+
+//  Move to head
+router.to_head(contact, bucket)
+```
+
+#### router.to_tail(contact, bucket)
+
+\
+**Moves the contact to the tail of the specified bucket.**
+```js
+let contact = new plexus.Contact({
+    host: host,
+    port: port,
+    id: id,
+    clock: new plexus.VectorClock()
+});
+
+let bucket = new plexus.Bucket();
+
+//  Move to tail
+router.to_tail(contact, bucket)
+```
+
+#### router.ping_head(contact, bucket)
+
+\
+**Replaces the contact at head of the specified bucket with the new contact if it does not respond (no longer online or unreachable).**
+```js
+let contact = new plexus.Contact({
+    host: host,
+    port: port,
+    id: id,
+    clock: new plexus.VectorClock()
+});
+
+let bucket = new plexus.Bucket();
+
+//  Replace if head is unreachable
+router.ping_head(contact, bucket)
 ```
