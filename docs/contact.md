@@ -5,8 +5,11 @@ Contacts are used to store data about nodes such as their address and port neede
 # **Contents**
 
 * constructor
-    * [new Contact(options)](#new-itemoptions)
+    * [new Contact(options)](#new-contactoptions)
+* getters
+    * [contact.name](#contactname)
 * methods
+    * [contact.generate_id](#contactgenerate_id)
 
 # **Constructor**
 
@@ -26,4 +29,17 @@ const plexus = require("plexus");
 let contact = new plexus.Contact({});
 ```
 
+# **Getters**
+
+#### contact.name
+
+\
+**Returns full address of the contact as _`IP:PORT`_.**
+```js
+let address = contact.name;
+console.log(address);   //  127.0.0.1:8080
+```
+
 # **Methods**
+
+#### contact.generate_id()
