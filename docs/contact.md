@@ -18,15 +18,19 @@ Contacts are used to store data about nodes such as their address and port neede
 * `options`:
     * `host`: _String_ IP address of the node.
     * `port`: _Integer_ UDP port of the node.
-    * `id`: _String_ The node ID.
-    * `clock`: _VectorClock_ The node's Vector Clock.
+    * `id`: _String_ _(Optional, if none is provided one will be generated)_ The node ID.
+    * `clock`: _VectorClock_ _(Optional, if none is provided one will be created and start at time = 0)_ The node's Vector Clock.
 
 \
 **Creates a new Contact.**
 ```js
 const plexus = require("plexus");
 
-let contact = new plexus.Contact({});
+//  Creating a new Contact
+let contact = new plexus.Contact({
+    host: "127.0.0.1",
+    port: 8080
+});
 ```
 
 # **Getters**
@@ -43,3 +47,6 @@ console.log(address);   //  127.0.0.1:8080
 # **Methods**
 
 #### contact.generate_id()
+
+\
+**Generates a unique contact ID (should only be used for the local node when an ID is not provided).**
