@@ -42,25 +42,11 @@ let rpc = new plexus.RPC();
 \
 **Creates a pracket ID.**
 
-#### rpc.error_handler(error)
-
-\
-**Closes the socket if an error occurs.**
-
-#### rpc.message_handler(bytes, rinfo)
-
-\
-**Handles incoming messages.**
-
 #### rpc.send_request({host, port}, id)
 
 #### rpc.send_acknowledge({host, port}, id)
 
 #### rpc.on_request({host, port}, bytes)
-
-#### rpc.on_acknowledge({host, port}, bytes)
-
-#### rpc.on_message({host, port}, bytes)
 
 #### rpc.message_type(message)
 
