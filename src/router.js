@@ -56,7 +56,7 @@ class Router {
         return contacts;
     }
 
-    //  Get the bucket index of a contact compared to another one
+    //  Returns the bucket index of a contact based on its distance to another contact
     get_bucket_index(contact0, contact1) {
         let distance = this.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
         let index = distance.length;

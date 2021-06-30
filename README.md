@@ -18,7 +18,7 @@
 ```
 npm run test
 ```
-**This test will create a 50-Node Local Mesh Network and then go through the 4 following steps**
+**This test will create a 50-Node Local Mesh Network and then go through the 4 following steps.**
 
 Step | Description
 ------------ | -------------
@@ -27,6 +27,35 @@ Node lookup | Testing if nodes can find another node on the network
 Broadcasting test | Testing if a node can broadcast to the rest of the network
 Non existent item lookup | Testing if nodes dont find non existent data on the network*
 ###### * (The lookup should timemout and fail)
+
+<br>
+
+```
+npm run chat
+```
+**A demo CLI chat client to test communication between nodes.**
+
+<br>
+
+```
+npm run broadcast
+```
+**Testing the broadcasting system between 3 node A, B & C where A & B know eachother, B & C know eachother as well and A & C don't know eachother but should be able to communicate regardless.**
+
+```
+//  Expected output:
+
+[A] b speaking
+[B] c speaking
+[C] a speaking
+[A] c speaking
+[C] b speaking
+[A] b speaking again
+[B] a speaking again
+[B] c speaking again
+[C] a speaking again
+[A] c speaking again
+```
 
 # **Quick Start**
 Creating a Plexus Node and joining the Mesh Network.

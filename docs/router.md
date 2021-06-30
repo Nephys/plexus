@@ -10,6 +10,7 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
     * [new Router(options)](#new-routeroptions)
 * getters
     * [router.size](#routersize)
+    * [router.contacts](#routercontacts)
 * methods
     * [router.distance(buffer0, buffer1)](#routerdistancebuffer0-buffer1)
 
@@ -54,6 +55,15 @@ let router = new Router({
 let size = router.size;
 ```
 
+#### router.contacts
+
+\
+**Returns the list of every known contacts.**
+```js
+//  Get the list of contacts
+let contacts = router.contacts;
+```
+
 # **Methods**
 
 #### router.distance(buffer0, buffer1)
@@ -64,4 +74,31 @@ let size = router.size;
 **Returns the XOR Metric distance between two buffers (buffers dont need to be of same length).**
 ```js
 let distance = router.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
+```
+
+#### router.get_bucket_index(contact0, contact1)
+* `contact0`: _Contact_ Contact to calculate the XOR distance to.
+* `contact1`: _Contact_ Contact to calculate the XOR distance from.
+
+\
+**Returns the bucket index of a contact based on its distance to another contact (generally the node's local contact).**
+```js
+let bucket_index = this.get_bucket_index(node.self, contact);
+```
+
+#### router.update_contact(contact)
+* `contact`: _Contact_ Contact to add, remove or update with a newer verion.
+
+\
+**Updates the list of contacts (add new, update order, replace old).**
+```js
+let contact = new Contact({
+    host: host,
+    port: port,
+    id: id,
+    clock: new VectorClock()
+});
+
+//  Add the contact if new, update if already known or ignore if not valid
+router.update_contact(contact);
 ```
