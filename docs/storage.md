@@ -34,6 +34,7 @@ let storage = new plexus.Storage();
 \
 **Checks if an item with the specified key is already stored.**
 ```js
+//  Is an item with the key "key" already stored
 storage.has("key");
 ```
 
@@ -43,6 +44,7 @@ storage.has("key");
 \
 **Returns the item with the specified key.**
 ```js
+//  Get the item with the key "key" from the storage
 storage.get("key");
 ```
 
@@ -54,7 +56,10 @@ storage.get("key");
 \
 **Stores an item on the node.**
 ```js
-storage.set(key, value, republish);
+let item = new plexus.Item({key: "key", value: "data", publisher: "id", timestamp: 0});
+
+//  Store an item that wont be republished after it expires
+storage.set("key", item, false);
 ```
 
 #### storage.delete(key)
@@ -63,7 +68,8 @@ storage.set(key, value, republish);
 \
 **Removes an item from the node.**
 ```js
-storage.delete(key);
+//  Remove the item with the key "key" from the storage
+storage.delete("key");
 ```
 
 #### storage.get_republishable_items()
