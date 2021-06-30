@@ -18,7 +18,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
 #### new Node(options)
 
 * `options`:
-    * `host`: _String_ _(Default: "127.0.0.1")_ Local IP of the node.
+    * `host`: _String_ _(Default: "127.0.0.1")_ Local IP address of the node.
     * `port`: _Integer_ _(Default: 8080)_ UDP port of the node.
     * `id`: _String_ The local node ID.
     * `capacity`: _Integer_ _(Default: 160)_ The maximum amount of buckets to be stored in the router.
