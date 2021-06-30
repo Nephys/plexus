@@ -57,8 +57,8 @@ let size = router.size;
 # **Methods**
 
 #### router.distance(buffer0, buffer1)
-* `buffer0`: _Buffer_ Buffer to calculate the XOR distance from.
-* `buffer1`: _Buffer_ Buffer to calculate the XOR distance to.
+* `buffer0`: _Buffer_ Buffer to calculate the XOR distance to.
+* `buffer1`: _Buffer_ Buffer to calculate the XOR distance from.
 
 \
 **Returns the XOR Metric distance between two buffers (buffers dont need to be of same length).**
