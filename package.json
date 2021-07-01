@@ -15,6 +15,21 @@
     "type": "git",
     "url": "https://github.com/Nephys/plexus.git"
   },
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "database",
+    "communication",
+    "storage",
+    "peer-to-peer",
+    "decentralized",
+    "p2p",
+    "discovery",
+    "kademlia-dht",
+    "kademlia",
+    "dependency-free",
+    "kademlia-like"
+  ],
   "author": "Nephys",
   "license": "MIT"
 }
