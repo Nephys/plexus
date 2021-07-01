@@ -18,6 +18,13 @@ The RPC allows the node to connect with other nodes, communicate with them as we
     * [rpc.message_type(message)](#rpcmessage_typemessage)
     * [rpc.handshake({host, port}, attempts, timeout)](#rpchandshakehost-port-attempts-timeout)
     * [rpc.send_message(message, {host, port}, attempts, timeout)](#rpcsend_messagemessage-host-port-attempts-timeout)
+* events
+    * [Event 'ready'](#event-ready)
+    * [Event 'message'](#event-message)
+    * [Event 'PING'](#event-PING)
+    * [Event 'FIND'](#event-FIND)
+    * [Event 'STORE'](#event-STORE)
+    * [Event 'BROADCAST'](#event-BROADCAST)
 
 # **Constructor**
 
@@ -131,3 +138,33 @@ handshake.on("response", (message, {host, port}) => {
     console.log("request got a response");
 });
 ```
+
+# **Events**
+
+#### Event 'ready'
+Emitted when the RPC is ready.
+
+#### Event 'message'
+* `message`: [_Message_](message.md) The message sent to the node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+
+#### Event 'PING'
+* `message`: [_Message_](message.md) The message sent to the node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+
+#### Event 'FIND'
+* `message`: [_Message_](message.md) The message sent to the node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+
+#### Event 'STORE'
+* `message`: [_Message_](message.md) The message sent to the node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.
+
+#### Event 'BROADCAST'
+* `message`: [_Message_](message.md) The message sent to the node.
+* `host`: _String_ IP address of the remote node.
+* `port`: _Integer_ UDP port of the remote node.

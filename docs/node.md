@@ -12,6 +12,9 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
     * [node.store({ key, value, republish })](#nodestore-key-value-republish-)
     * [node.find({ key })](#nodefind-key-)
 * events
+    * [Event 'ready'](#event-ready)
+    * [Event 'broadcast'](#event-broadcast)
+    * [Event 'connected'](#event-connected)
 
 # **Constructor**
 
@@ -96,3 +99,18 @@ lookup.on("timeout", () => {
     console.log("FIND request timed out");
 });
 ```
+
+# **Events**
+
+#### Event 'ready'
+Emitted when the local node is ready.
+
+#### Event 'broadcast'
+* `data`: _Object_ The data broadcasted through the network.
+
+Emitted when another node issues a broadcast request to this node.
+
+#### Event 'connected'
+* `contact`: [_Contact_](contact.md) The key used to find and store the value.
+
+Emitted when the local node successfully connects to another one.
