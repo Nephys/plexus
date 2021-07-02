@@ -1,6 +1,6 @@
 # **Plexus**
 [![License](https://img.shields.io/github/license/Nephys/plexus?style=flat-square)](LICENSE)
-![node-current (scoped)](https://img.shields.io/node/v/@nephys/plexus?style=flat-square)
+[![node-current (scoped)](https://img.shields.io/node/v/@nephys/plexus?style=flat-square)](https://www.npmjs.com/package/@nephys/plexus)
 
 
 >Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
@@ -125,6 +125,7 @@ node.on("broadcast", (data) => {
 - [X] ~~Clean up code~~
 - [X] ~~Finish implementing error handling using exceptions~~
 - [X] ~~Add documentation~~
+- [ ] Make broadcasting faster (master & slave broadcasting nodes?)
 ###### ~~* (WIP)~~
 
 # **Support Me 🤝**

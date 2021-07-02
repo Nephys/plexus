@@ -257,6 +257,7 @@ class Node extends EventEmitter {
             if(!contact) {
                 let response = new Message({result: contacts.concat(recipients), id: message.id});
                 this.rpc.send_message(response, {host, port});
+                return;
             }
 
             let request = new Message({method: "broadcast", params: {data: params.data, contacts: contacts.concat(recipients), sender:  {id: this.self.id, time: this.self.clock.time}}});
