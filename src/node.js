@@ -253,7 +253,7 @@ class Node extends EventEmitter {
             }).includes(c.id);
         });
 
-        list.map((contact) => {
+        let step = (contact) => {
             if(!contact) {
                 let response = new Message({result: contacts.concat(recipients), id: message.id});
                 this.rpc.send_message(response, {host, port});
@@ -271,8 +271,16 @@ class Node extends EventEmitter {
                         return r.id;
                     }).includes(c.id);
                 });
+
+                step(list.pop());
             });
-        });
+
+            handshake.on("timeout", () => {
+                step(list.pop());
+            });
+        }
+
+        step(list.pop());
     }
 
 
@@ -351,7 +359,7 @@ class Node extends EventEmitter {
             }).includes(c.id);
         });
 
-        list.map((contact) => {
+        let step = (contact) => {
             if(!contact) {
                 return;
             }
@@ -368,8 +376,16 @@ class Node extends EventEmitter {
                         return r.id;
                     }).includes(c.id);
                 });
+
+                step(list.pop());
             });
-        });
+
+            handshake.on("timeout", () => {
+                step(list.pop());
+            });
+        }
+
+        step(list.pop());
     }
 
     //  Connect to another node

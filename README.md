@@ -48,17 +48,11 @@ npm run broadcast
 //  Expected output:
 
 [A] b speaking
-[C] b speaking
 [B] a speaking
 [B] c speaking
 [C] a speaking
 [A] c speaking
-[A] b speaking again
-[C] b speaking again
-[B] a speaking again
-[B] c speaking again
-[C] a speaking again
-[A] c speaking again
+[C] b speaking
 ```
 
 # **Quick Start**
@@ -95,6 +89,7 @@ lookup.on("timeout", () => {
 
 # **Communication**
 Broadcasting to the whole Network.
+###### (WIP, subject to forwarding loops under certain network conditions)
 ```js
 //  Sendind to the Network
 node.broadcast({data: data});
