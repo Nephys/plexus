@@ -16,6 +16,11 @@
 * [Support](#support-me-)
 * [License](LICENSE)
 
+# **Installing**
+```
+npm install @nephys/plexus --save
+```
+
 # **Testing**
 ```
 npm run test
