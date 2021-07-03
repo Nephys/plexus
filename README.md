@@ -6,6 +6,7 @@
 >Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
 
 # **Contents**
+* [Installing](#installing)
 * [Testing](#testing)
 * [Quick Start](#quick-start)
 * [Storage](#storage)
