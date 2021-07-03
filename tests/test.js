@@ -4,7 +4,7 @@ const plexus = require("../index");
 
 let a = new plexus.Node();
 
-let node_count = 50;
+let node_count = 500;
 let nodes = [];
 
 console.log(`Running local selftest with ${node_count} nodes`);

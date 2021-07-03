@@ -360,7 +360,7 @@ class Node extends EventEmitter {
             }).includes(c.id);
         });
 
-        let step = (contact) => {
+        list.map((contact) => {
             if(!contact) {
                 return;
             }
@@ -377,16 +377,8 @@ class Node extends EventEmitter {
                         return r.id;
                     }).includes(c.id);
                 });
-
-                step(list.pop());
             });
-
-            handshake.on("timeout", () => {
-                step(list.pop());
-            });
-        }
-
-        step(list.pop());
+        });
     }
 
     //  Connect to another node

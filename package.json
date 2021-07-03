@@ -28,7 +28,13 @@
     "kademlia-dht",
     "kademlia",
     "dependency-free",
-    "kademlia-like"
+    "kademlia-like",
+    "dht",
+    "distributed-hash-table",
+    "hash-table",
+    "distributed-system",
+    "distributed",
+    "network"
   ],
   "author": "Nephys",
   "license": "MIT"
