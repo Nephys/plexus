@@ -152,6 +152,7 @@ class Node extends EventEmitter {
             {"PING": this.on_ping},
             {"FIND": this.on_find},
             {"STORE": this.on_store},
+            {"CONTACTS": this.on_contacts},
             {"BROADCAST": this.on_broadcast},
         ];
 
@@ -224,6 +225,17 @@ class Node extends EventEmitter {
         this.storage.set(item.key, item);
     }
 
+    //  Respond to CONTACTS requests by sending the list of contacts
+    on_contacts(message, {host, port}) {
+        let params = message.params;
+        this.self.clock.update(params.sender.id);
+
+        let contacts = this.router.contacts;
+
+        let response = new Message({result: contacts, id: message.id});
+        this.rpc.send_message(response, {host, port});
+    }
+
     //  Respond to BROADCAST requests by sending the message to every known nodes
     on_broadcast(message, {host, port}) {
         let params = message.params;
@@ -231,57 +243,50 @@ class Node extends EventEmitter {
 
         this.emit("broadcast", params.data);
 
-        let sender = new Contact({
-            host,
-            port,
-            id: params.sender.id,
-            clock: new VectorClock({start: params.sender.time})
-        });
-
-        let recipients = params.contacts;
-        recipients.push(sender);
-
-        let list = this.router.contacts.filter((c) => {
-            return !recipients.map((r) => {
-                return r.id;
-            }).includes(c.id);
-        });
-
+        let recipients = new Map();
+        let contacted = [this.self.id].concat(params.contacted);
         let contacts = this.router.contacts.filter((c) => {
-            return !recipients.map((r) => {
-                return r.id;
-            }).includes(c.id);
+            return params.recipients.includes(c.id);
+        });
+        let broadcast_contacts = this.router.contacts.filter((c) => {
+            return params.recipients.includes(c.id);
         });
 
-        let step = (contact) => {
-            if(!contact) {
-                let response = new Message({result: contacts.concat(recipients), id: message.id});
-                this.rpc.send_message(response, {host, port});
-                return;
-            }
-
-            let request = new Message({method: "broadcast", params: {data: params.data, contacts: contacts.concat(recipients), sender:  {id: this.self.id, time: this.self.clock.time}}});
-            let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
-            
-            handshake.on("response", (m, {h, p}) => {
-                this.self.clock.update(contact.id);
-
-                recipients = m.result;
-                contacts = contacts.filter((c) => {
-                    return !recipients.map((r) => {
-                        return r.id;
-                    }).includes(c.id);
-                });
-
-                step(list.pop());
-            });
-
-            handshake.on("timeout", () => {
-                step(list.pop());
+        let send_broadcast = () => {
+            broadcast_contacts.map((contact) => {
+                let request = new Message({method: "broadcast", params: {data: params.data, contacted, recipients: recipients.get(contact.id), sender: {id: this.self.id, time: this.self.clock.time}}});
+                this.rpc.send_message(request, {host: contact.host, port: contact.port});
             });
         }
 
-        step(list.pop());
+        let build_recipients = (contact) => {
+            if(!contact) {
+                send_broadcast();
+                return;
+            }
+
+            let request = new Message({method: "contacts", params: {sender: {id: this.self.id, time: this.self.clock.time}}});
+            let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
+
+            handshake.on("response", (m, {host, port}) => {
+                let result = m.result.map((c) => {
+                    return c.id;
+                });
+                
+                let filtered = result.filter((id) => {
+                    return !contacted.includes(id);
+                });
+                contacted = contacted.concat(filtered);
+                recipients.set(contact.id, filtered);
+
+                build_recipients(contacts.shift());
+            });
+
+            handshake.on("timeout", () => {
+                build_recipients(contacts.shift());
+            });
+        }
+        build_recipients(contacts.shift());
     }
 
 
@@ -346,39 +351,46 @@ class Node extends EventEmitter {
     broadcast({data}) {
         this.self.clock.update(this.self.id);
 
-        let recipients = [];
+        let recipients = new Map();
+        let contacted = [this.self.id];
+        let contacts = this.router.contacts;
+        let broadcast_contacts = this.router.contacts;
 
-        let list = this.router.contacts.filter((c) => {
-            return !recipients.map((r) => {
-                return r.id;
-            }).includes(c.id);
-        });
+        let send_broadcast = () => {
+            broadcast_contacts.map((contact) => {
+                let request = new Message({method: "broadcast", params: {data, contacted, recipients: recipients.get(contact.id), sender: {id: this.self.id, time: this.self.clock.time}}});
+                this.rpc.send_message(request, {host: contact.host, port: contact.port});
+            });
+        }
 
-        let contacts = this.router.contacts.filter((c) => {
-            return !recipients.map((r) => {
-                return r.id;
-            }).includes(c.id);
-        });
-
-        list.map((contact) => {
+        let build_recipients = (contact) => {
             if(!contact) {
+                send_broadcast();
                 return;
             }
 
-            let request = new Message({method: "broadcast", params: {data, contacts: contacts.concat(recipients), sender:  {id: this.self.id, time: this.self.clock.time}}});
+            let request = new Message({method: "contacts", params: {sender: {id: this.self.id, time: this.self.clock.time}}});
             let handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
-            
-            handshake.on("response", (m, {h, p}) => {
-                this.self.clock.update(contact.id);
-                
-                recipients = m.result;
-                contacts = contacts.filter((c) => {
-                    return !recipients.map((r) => {
-                        return r.id;
-                    }).includes(c.id);
+
+            handshake.on("response", (message, {host, port}) => {
+                let result = message.result.map((c) => {
+                    return c.id;
                 });
+                
+                let filtered = result.filter((id) => {
+                    return !contacted.includes(id);
+                });
+                contacted = contacted.concat(filtered);
+                recipients.set(contact.id, filtered);
+
+                build_recipients(contacts.shift());
             });
-        });
+
+            handshake.on("timeout", () => {
+                build_recipients(contacts.shift());
+            });
+        }
+        build_recipients(contacts.shift());
     }
 
     //  Connect to another node
