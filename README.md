@@ -4,7 +4,7 @@
 [![node-current (scoped)](https://img.shields.io/node/v/@nephys/plexus?style=flat-square)](https://www.npmjs.com/package/@nephys/plexus)
 
 
->Dependency-free decentralized peer-to-peer network for storage and realtime communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
+>Dependency-free decentralized peer-to-peer network for storage and communication based on the [Kademlia](http://www.scs.stanford.edu/~dm/home/papers/kpos.pdf) distributed hash table.
 
 # **Contents**
 * [Installing](#installing)
