@@ -1,5 +1,6 @@
 # **Plexus**
 [![License](https://img.shields.io/github/license/Nephys/plexus?style=flat-square)](LICENSE)
+[![npm (scoped)](https://img.shields.io/npm/v/@nephys/plexus?style=flat-square)](https://www.npmjs.com/package/@nephys/plexus)
 [![node-current (scoped)](https://img.shields.io/node/v/@nephys/plexus?style=flat-square)](https://www.npmjs.com/package/@nephys/plexus)
 
 
@@ -131,7 +132,7 @@ node.on("broadcast", (data) => {
 - [X] ~~Clean up code~~
 - [X] ~~Finish implementing error handling using exceptions~~
 - [X] ~~Add documentation~~
-- [ ] Make broadcasting faster (master & slave broadcasting nodes?)
+- [x] ~~Make broadcasting faster (master & slave broadcasting nodes?) Complete rework~~
 ###### ~~* (WIP)~~
 
 # **Support Me 🤝**
