@@ -92,8 +92,8 @@ class Node extends EventEmitter {
             });
 
             handshake.on("timeout", () => {
-                this.router.remove_contact(contact);
-                this.self.clock.update(contact.id);
+                this.router.remove_contact(c);
+                this.self.clock.update(c.id);
             })
         });
     }
