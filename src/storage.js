@@ -22,10 +22,6 @@ class Storage {
 
     delete(key) {
         items.delete(key);
-
-        if(republish_list.has(key)) {
-            republish_list.delete(key);
-        }
     }
 
     get_republishable_items() {
