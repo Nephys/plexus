@@ -5,11 +5,11 @@ class Storage {
     constructor() { }
 
     has(key) {
-        return items.has(key);
+        return items.has(key) || republish_list.has(key);
     }
 
     get(key) {
-        return items.get(key);
+        return items.get(key) || republish_list.get(key);
     }
 
     set(key, value, republish = false) {
