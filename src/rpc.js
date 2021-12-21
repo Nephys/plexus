@@ -55,8 +55,8 @@ class RPC extends EventEmitter {
     }
 
     message_handler(bytes, rinfo) {
-        let host = rinfo.address;
-        let port = rinfo.port;
+        const host = rinfo.address;
+        const port = rinfo.port;
 
         const type = bytes.readUInt16BE(0);
         switch (type) {
@@ -117,7 +117,7 @@ class RPC extends EventEmitter {
         
         // Handle pending handshakes if any
         if(pending_handshakes.has(id)) {
-            let { emitter, negotiator } = pending_handshakes.get(id);
+            const { emitter, negotiator } = pending_handshakes.get(id);
 
             clearInterval(negotiator);
             emitter.emit("connected");
@@ -129,15 +129,15 @@ class RPC extends EventEmitter {
     //  Message parsing
     on_message({host, port}, bytes) {
         try {
-            let spec = JSON.parse(bytes.toString());
-            let message = new Message(spec);
+            const spec = JSON.parse(bytes.toString());
+            const message = new Message(spec);
 
             this.emit("message", message, {host, port});
             if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
                 this.emit(message.method, message, {host, port});
             } else if(this.message_type(message) == MESSAGE_TYPES.RESPONSE && message.id) {
                 if(pending_requests.has(message.id)) {
-                    let {emitter, timeout} = pending_requests.get(message.id);
+                    const { emitter, timeout } = pending_requests.get(message.id);
 
                     clearTimeout(timeout);
                     emitter.emit("response", message, {host, port});
@@ -152,20 +152,20 @@ class RPC extends EventEmitter {
 
     //  Returns the type of the message (REQUEST, RESPONSE or UNKNOWN)
     message_type(message) {
-        let is_request = !!(message.method !== undefined && message.params !== undefined);
-        let is_response = !!(message.id && ((message.result !== undefined) || message.error));
+        const is_request = !!(message.method !== undefined && message.params !== undefined);
+        const is_response = !!(message.id && ((message.result !== undefined) || message.error));
 
-        let type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
+        const type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
         return type;
     }
 
     //  Handshake negotiation
     handshake({host, port}, attempts = 60, timeout = 1000) {
-        let emitter = new EventEmitter();
-        let id = this.create_id();
+        const emitter = new EventEmitter();
+        const id = this.create_id();
 
         //  Ping the remote until it responds or the handshake times out
-        let negotiator = setInterval(() => {
+        const negotiator = setInterval(() => {
             if(attempts > 0) {
                 attempts--;
                 this.send_request({host, port}, id);
@@ -185,16 +185,16 @@ class RPC extends EventEmitter {
 
     send_message(message, {host, port}, attempts = 60, timeout = 1000) {
         //  Initiate a handshake with the remote
-        let handshake = this.handshake({host, port}, attempts, timeout);
+        const handshake = this.handshake({host, port}, attempts, timeout);
 
         //  Only send the message if the remote is responding
         handshake.on("connected", () => {
             if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
-                let response_timeout = setTimeout(() => {
+                const response_timeout = setTimeout(() => {
                     handshake.emit("ignore");
                     pending_requests.delete(message.id);
                 }, attempts * timeout);
-                pending_requests.set(message.id, {emitter: handshake, timeout: response_timeout});
+                pending_requests.set(message.id, { emitter: handshake, timeout: response_timeout });
             }
 
             this.socket.send(message.serialize(), port, host);

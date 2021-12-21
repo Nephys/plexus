@@ -8,11 +8,12 @@ const stdout = process.stdout;
 stdin.resume();
 stdin.setEncoding("utf8");
 
-let remote = null;
-let port = Math.floor(Math.random() * 6000 + 1);
-let node = new plexus.Node({port: port});
+const port = Math.floor(Math.random() * 6000 + 1);
+const client_name = `${os.hostname()}_${port}`
 
-let client_name = `${os.hostname()}_${port}`
+const node = new plexus.Node({port: port});
+
+let remote = null;
 
 node.rpc.on("ready", () => {
     console.log(`client listening on ${node.self.name}`);
@@ -32,10 +33,10 @@ node.rpc.on("ready", () => {
         stdout.write("\033[1A" + `[${client_name}]: ${data.toString()}`);
 
         if(!remote) {
-            let address = data.toString().replace(/\r?\n|\r/g, " ");
-            let host = address.split(":")[0];
-            let port = parseInt(address.split(":")[1]);
-            let tmp_remote = {host, port};
+            const address = data.toString().replace(/\r?\n|\r/g, " ");
+            const host = address.split(":")[0];
+            const port = parseInt(address.split(":")[1]);
+            const tmp_remote = {host, port};
 
             node.connect(tmp_remote).on("connected", () => {
                 remote = tmp_remote;
@@ -43,7 +44,7 @@ node.rpc.on("ready", () => {
             });
         } else {
             try {
-                let message_data = {
+                const message_data = {
                     type: "message",
                     
                     metadata: {

@@ -30,10 +30,10 @@ Messages are used by nodes to communicate with one another and exchange data ove
 const plexus = require("plexus");
 
 //  Create a request
-let request = new plexus.Message({ method: "remote method", params: {} });
+const request = new plexus.Message({ method: "remote method", params: {} });
 
 //  Create a response
-let response = new plexus.Message({ result: "response", id: request.id });
+const response = new plexus.Message({ result: "response", id: request.id });
 ```
 
 # **Methods**
@@ -53,7 +53,7 @@ message.id = message.create_id();
 **Converts the message into a new buffer to be sent over the network.**
 ```js
 //  Serialize the message before sending
-let serialized = message.serialize();
+const serialized = message.serialize();
 ```
 
 #### message.message_type(specs)
@@ -63,6 +63,6 @@ let serialized = message.serialize();
 \
 **Returns the type of the message (REQUEST, RESPONSE or UNKNOWN).**
 ```js
-let specs = { method: "remote method", params: {} }
-let type = message.message_type(specs);
+const specs = { method: "remote method", params: {} }
+const type = message.message_type(specs);
 ```

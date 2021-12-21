@@ -27,7 +27,7 @@ Contacts are used to store data about nodes such as their address and port neede
 const plexus = require("plexus");
 
 //  Creating a new Contact
-let contact = new plexus.Contact({
+const contact = new plexus.Contact({
     host: "127.0.0.1",
     port: 8080
 });
@@ -40,7 +40,7 @@ let contact = new plexus.Contact({
 \
 **Returns full address of the contact as _`IP:PORT`_.**
 ```js
-let address = contact.name;
+const address = contact.name;
 console.log(address);   //  127.0.0.1:8080
 ```
 

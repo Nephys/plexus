@@ -8,7 +8,7 @@ class VectorClock {
     }
 
     get time() {
-        let sum = this.start + Object.values(Object.fromEntries(time_map)).reduce((acc, val) => acc + val, 0);
+        const sum = this.start + Object.values(Object.fromEntries(time_map)).reduce((acc, val) => acc + val, 0);
         return sum;
     }
 

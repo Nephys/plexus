@@ -37,14 +37,14 @@ Structuring the network to make it more reliable by allowing nodes to stay inter
 ```js
 const plexus = require("plexus");
 
-let contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
+const contact = new plexus.Contact({host: "127.0.0.1", port: 8080});
 
-let RPC = new RPC({
+const RPC = new RPC({
     port: 8080
 });
 
 //  Router creation
-let router = new plexus.Router({
+const router = new plexus.Router({
     contact: contact,
     rpc: RPC,
     capacity: 160,
@@ -60,7 +60,7 @@ let router = new plexus.Router({
 **Returns the number of known contacts.**
 ```js
 //  Get the number of contacts
-let size = router.size;
+const size = router.size;
 ```
 
 #### router.contacts
@@ -69,7 +69,7 @@ let size = router.size;
 **Returns the list of every known contacts.**
 ```js
 //  Get the list of contacts
-let contacts = router.contacts;
+const contacts = router.contacts;
 ```
 
 # **Methods**
@@ -81,7 +81,7 @@ let contacts = router.contacts;
 \
 **Returns the XOR Metric distance between two buffers (buffers dont need to be of same length).**
 ```js
-let distance = router.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
+const distance = router.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
 ```
 
 #### router.get_bucket_index(contact0, contact1)
@@ -91,7 +91,7 @@ let distance = router.distance(Buffer.from(contact0.id), Buffer.from(contact1.id
 \
 **Returns the bucket index of a contact based on its distance to another contact (generally the node's local contact).**
 ```js
-let bucket_index = this.get_bucket_index(node.self, contact);
+const bucket_index = this.get_bucket_index(node.self, contact);
 ```
 
 #### router.update_contact(contact)
@@ -100,7 +100,7 @@ let bucket_index = this.get_bucket_index(node.self, contact);
 \
 **Updates the list of contacts (add new, update order, replace old).**
 ```js
-let contact = new plexus.Contact({
+const contact = new plexus.Contact({
     host: host,
     port: port,
     id: id,
@@ -118,14 +118,14 @@ router.update_contact(contact);
 \
 **Moves the contact to the head of the specified bucket.**
 ```js
-let contact = new plexus.Contact({
+const contact = new plexus.Contact({
     host: host,
     port: port,
     id: id,
     clock: new plexus.VectorClock()
 });
 
-let bucket = new plexus.Bucket();
+const bucket = new plexus.Bucket();
 
 //  Move to head
 router.to_head(contact, bucket)
@@ -138,14 +138,14 @@ router.to_head(contact, bucket)
 \
 **Moves the contact to the tail of the specified bucket.**
 ```js
-let contact = new plexus.Contact({
+const contact = new plexus.Contact({
     host: host,
     port: port,
     id: id,
     clock: new plexus.VectorClock()
 });
 
-let bucket = new plexus.Bucket();
+const bucket = new plexus.Bucket();
 
 //  Move to tail
 router.to_tail(contact, bucket)
@@ -158,14 +158,14 @@ router.to_tail(contact, bucket)
 \
 **Replaces the contact at head of the specified bucket with the new contact if it does not respond (no longer online or unreachable).**
 ```js
-let contact = new plexus.Contact({
+const contact = new plexus.Contact({
     host: host,
     port: port,
     id: id,
     clock: new plexus.VectorClock()
 });
 
-let bucket = new plexus.Bucket();
+const bucket = new plexus.Bucket();
 
 //  Replace if head is unreachable
 router.ping_head(contact, bucket)
@@ -181,7 +181,7 @@ router.ping_head(contact, bucket)
 ```js
 //  The local node is 0xa45681de963cbfb2e841d2c94d450312347x3b235fb70fb27f2f69285ce481ce
 //  We want a list of the 20 closest known contacts to 0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed
-let contacts = router.get_contacts_near(Buffer.from("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed"), 20, Buffer.from("0xa45681de963cbfb2e841d2c94d450312347x3b235fb70fb27f2f69285ce481ce"));
+const contacts = router.get_contacts_near(Buffer.from("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed"), 20, Buffer.from("0xa45681de963cbfb2e841d2c94d450312347x3b235fb70fb27f2f69285ce481ce"));
 ```
 
 #### router.has_contact_id(id)
@@ -191,7 +191,7 @@ let contacts = router.get_contacts_near(Buffer.from("0xa6564bce963cbfb2e841d2c94
 **Checks if the router already contains a contact with the specified ID.**
 ```js
 //  Returns true if the router contain a contact with that ID
-let exists = router.has_contact_id("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
+const exists = router.has_contact_id("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
 ```
 
 #### router.get_contact(id)
@@ -201,5 +201,5 @@ let exists = router.has_contact_id("0xa6564bce963cbfb2e841d2c94d450368c1463b235f
 **Returns a contact with the specified ID if the router contains one.**
 ```js
 //  If contact is null the router doesn't contain any contacts with that ID
-let contact = router.get_contact("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
+const contact = router.get_contact("0xa6564bce963cbfb2e841d2c94d450368c1463b235fb70fb27f2f69285cacf8ed");
 ```

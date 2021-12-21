@@ -23,8 +23,8 @@ class Contact {
     }
 
     generate_id() {
-        let seed = crypto.randomUUID({disableEntropyCache: true});
-        let hash = crypto.createHash("sha256").update(seed).digest("hex");
+        const seed = crypto.randomUUID({disableEntropyCache: true});
+        const hash = crypto.createHash("sha256").update(seed).digest("hex");
         return `0x${hash}`
     }
 

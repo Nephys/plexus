@@ -55,11 +55,11 @@ npm run broadcast
 //  Expected output:
 
 [A] b speaking
+[C] b speaking
 [B] a speaking
 [B] c speaking
 [C] a speaking
 [A] c speaking
-[C] b speaking
 ```
 
 # **Quick Start**
@@ -68,7 +68,7 @@ Creating a Plexus Node and joining the Mesh Network.
 const plexus = require("plexus");
 
 //  Node creation
-let node = new plexus.Node({host: "127.0.0.1", port: 8080});    //  By default the host and port are 127.0.0.1:8080
+const node = new plexus.Node({host: "127.0.0.1", port: 8080});    //  By default the host and port are 127.0.0.1:8080
 
 //  Join the network
 node.connect({host: "remote_ip", port: remote_port});
@@ -78,10 +78,10 @@ node.connect({host: "remote_ip", port: remote_port});
 Storing and retrieving data on the Network.
 ```js
 //  Storing data
-let item = node.store({key: key, value: value, republish: true});   //  If no key is provided it will default to the hash of the value stored
+const item = node.store({key: key, value: value, republish: true});   //  If no key is provided it will default to the hash of the value stored
 
 //  Retrieving data
-let lookup = node.find({key: key});
+const lookup = node.find({key: key});
 
 //  The item exists on the Network
 lookup.on("found", (result) => {

@@ -23,7 +23,7 @@ The local storage used to store [items](item.md) on the node.
 ```js
 const plexus = require("plexus");
 
-let storage = new plexus.Storage();
+const storage = new plexus.Storage();
 ```
 
 # **Methods**
@@ -56,7 +56,7 @@ storage.get("key");
 \
 **Stores an item on the node.**
 ```js
-let item = new plexus.Item({key: "key", value: "data", publisher: "id", timestamp: 0});
+const item = new plexus.Item({key: "key", value: "data", publisher: "id", timestamp: 0});
 
 //  Store an item that wont be republished after it expires
 storage.set("key", item, false);
@@ -78,7 +78,7 @@ storage.delete("key");
 **Returns the list of items to republish after expiration.**
 ```js
 //  Get the items to republish
-let items = storage.get_republishable_items();
+const items = storage.get_republishable_items();
 ```
 
 #### storage.get_items()
@@ -87,5 +87,5 @@ let items = storage.get_republishable_items();
 **Returns the list of items stored.**
 ```js
 //  Get the items stored
-let items = storage.get_items();
+const items = storage.get_items();
 ```

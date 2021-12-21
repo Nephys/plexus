@@ -24,7 +24,7 @@ Items are used to store and retrieve data on the network.
 ```js
 const plexus = require("plexus");
 
-let item = new plexus.Item({key: key, value: value, publisher: "id", timestamp: 0});
+const item = new plexus.Item({key: key, value: value, publisher: "id", timestamp: 0});
 ```
 
 # **Methods**

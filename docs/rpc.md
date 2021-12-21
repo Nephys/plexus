@@ -39,7 +39,7 @@ The RPC allows the node to connect with other nodes, communicate with them as we
 const plexus = require("plexus");
 
 //  Creating a new RPC
-let rpc = new plexus.RPC();
+const rpc = new plexus.RPC();
 ```
 
 # **Methods**
@@ -50,7 +50,7 @@ let rpc = new plexus.RPC();
 **Creates a pracket ID.**
 ```js
 //  Create and ID for the packet to send
-let id = rpc.create_id();
+const id = rpc.create_id();
 ```
 
 #### rpc.send_request({host, port}, id)
@@ -61,10 +61,10 @@ let id = rpc.create_id();
 \
 **Sends a request packet.**
 ```js
-let host = "127.0.0.1";
-let port = 8080;
+const host = "127.0.0.1";
+const port = 8080;
 
-let id = rpc.create_id();
+const id = rpc.create_id();
 
 rpc.send_request({host, port}, id);
 ```
@@ -77,11 +77,11 @@ rpc.send_request({host, port}, id);
 \
 **Sends an acknowledgement packet.**
 ```js
-let host = "127.0.0.1";
-let port = 8080;
+const host = "127.0.0.1";
+const port = 8080;
 
 //  Incoming request with ID = 63b8fa2e7d0af923fb0505340bcad6a5
-let id = "63b8fa2e7d0af923fb0505340bcad6a5";
+const id = "63b8fa2e7d0af923fb0505340bcad6a5";
 
 rpc.send_acknowledge({host, port}, id);
 ```
@@ -93,10 +93,10 @@ rpc.send_acknowledge({host, port}, id);
 **Returns the type of a message (REQUEST, RESPONSE or UNKNOWN).**
 ```js
 //  Create a request
-let request = new plexus.Message({ method: "remote method", params: {} });
+const request = new plexus.Message({ method: "remote method", params: {} });
 
 //  Get the type of the message
-let type = rpc.message_type(request);
+const type = rpc.message_type(request);
 console.log(type);  //  REQUEST (0)
 ```
 
@@ -109,7 +109,7 @@ console.log(type);  //  REQUEST (0)
 \
 **Initiates a handshake negotiation with a remote node.**
 ```js
-let handshake = rpc.handshake({host, port}, attempts, timeout);
+const handshake = rpc.handshake({host, port}, attempts, timeout);
 
 handshake.on("connected", () => {
     console.log("connected");
@@ -130,9 +130,9 @@ handshake.on("timeout", () => {
 \
 **Sends a message to a remote node.**
 ```js
-let request = new plexus.Message({ method: "remote method", params: {} });
+const request = new plexus.Message({ method: "remote method", params: {} });
 
-let handshake = rpc.send_message(request, {host, port});
+const handshake = rpc.send_message(request, {host, port});
 
 handshake.on("response", (message, {host, port}) => {
     console.log("request got a response");

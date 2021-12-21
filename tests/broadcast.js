@@ -1,8 +1,8 @@
 const plexus = require("../index");
 
-let a = new plexus.Node({id: "a"});
-let b = new plexus.Node({id: "b", port: 8081});
-let c = new plexus.Node({id: "c", port: 8082});
+const a = new plexus.Node({id: "a"});
+const b = new plexus.Node({id: "b", port: 8081});
+const c = new plexus.Node({id: "c", port: 8082});
 
 a.on("broadcast", (data) => {
     console.log(`[A] ${data}`);
@@ -22,7 +22,7 @@ c.connect({host: b.self.host, port: b.self.port});
 
 let ready = 0;
 
-let update = () => {
+const update = () => {
     ready++;
 
     if(ready >= 3) {

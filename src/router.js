@@ -19,16 +19,16 @@ class Router {
 
     //  Returns the XOR Metric distance between two buffers (buffers dont need to be of same length)
     distance(buffer0, buffer1) {
-        let min = Math.min(buffer0.length, buffer1.length);
-        let max = Math.max(buffer0.length, buffer1.length);
+        const min = Math.min(buffer0.length, buffer1.length);
+        const max = Math.max(buffer0.length, buffer1.length);
 
-        let distance = Buffer.alloc(max);
+        const distance = Buffer.alloc(max);
 
         for(let i = 0; i < min; i++) {
             distance[i] = buffer0[i] ^ buffer1[i];
         }
 
-        let buffer = buffer0.length == max ? buffer0 : buffer1;
+        const buffer = buffer0.length == max ? buffer0 : buffer1;
         for(let i = min; i < max; i++) {
             distance[i] = buffer[i];
         }
@@ -44,11 +44,11 @@ class Router {
     //  Returns a list of every known contacts
     get contacts() {
         let contacts = [];
-        let indexes = Object.keys(this.buckets);
+        const indexes = Object.keys(this.buckets);
 
         for (let i = 0; i < indexes.length; i++) {
-            let index = indexes[i];
-            let bucket = this.buckets[index];
+            const index = indexes[i];
+            const bucket = this.buckets[index];
 
             contacts = contacts.concat(bucket.get_contacts());
         }
@@ -58,7 +58,7 @@ class Router {
 
     //  Returns the bucket index of a contact based on its distance to another contact
     get_bucket_index(contact0, contact1) {
-        let distance = this.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
+        const distance = this.distance(Buffer.from(contact0.id), Buffer.from(contact1.id));
         let index = distance.length;
 
         for (var i = 0; i < distance.length; i++) {
@@ -81,12 +81,12 @@ class Router {
 
     //  Remove a contact from the router
     remove_contact(contact) {
-        let bucket_index = this.get_bucket_index(this.self, contact);
+        const bucket_index = this.get_bucket_index(this.self, contact);
         if(bucket_index >= this.capacity) {
             return;
         }
 
-        let bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
+        const bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
         if(bucket.has_contact(contact)) {
             bucket.remove_contact(contact);
         }
@@ -94,12 +94,12 @@ class Router {
 
     //  Update the list of contacts (add new, update order, replace old)
     update_contact(contact) {
-        let bucket_index = this.get_bucket_index(this.self, contact);
+        const bucket_index = this.get_bucket_index(this.self, contact);
         if(bucket_index >= this.capacity) {
             return;
         }
 
-        let bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
+        const bucket = this.buckets[bucket_index] = !this.buckets[bucket_index] ? new Bucket() : this.buckets[bucket_index];
         if(bucket.has_contact(contact)) {
             this.to_tail(contact, bucket);
         } else if(bucket.size < this.peers) {
@@ -122,10 +122,10 @@ class Router {
 
     //  Replace the contact at head with the new contact if it does not respond
     ping_head(contact, bucket) {
-        let head = bucket.get_contact(0);
-        let ping = new Message({method: "ping", params: {id: this.self.id}});
+        const head = bucket.get_contact(0);
+        const ping = new Message({method: "ping", params: {id: this.self.id}});
 
-        let handshake = this.rpc.send_message(ping, {host: head.host, port: head.port});
+        const handshake = this.rpc.send_message(ping, {host: head.host, port: head.port});
         handshake.on("timeout", () => {
             this.remove_contact(head);
             this.add_contact(contact);
@@ -134,16 +134,16 @@ class Router {
 
     //  Returns a list of the nearest contacts from the specified buffer
     get_contacts_near(buffer, limit, sender) {
-        let contacts = this.contacts.map((c) => {
-            let distance = this.distance(Buffer.from(c.id), buffer);
+        const contacts = this.contacts.map((c) => {
+            const distance = this.distance(Buffer.from(c.id), buffer);
 
             return {
                 contact: c,
                 distance
             };
         }).sort((a, b) => {
-            let min = Math.min(a.distance.length, b.distance.length);
-            let max = Math.max(a.distance.length, b.distance.length);
+            const min = Math.min(a.distance.length, b.distance.length);
+            const max = Math.max(a.distance.length, b.distance.length);
 
             for (let i = 0; i < min; i++) {
                 if (a.distance[i] !== b.distance[i]) {
@@ -155,7 +155,7 @@ class Router {
                 }
             }
 
-            let c = a.distance.length == max ? a : b;
+            const c = a.distance.length == max ? a : b;
             for(let i = min; i < max; i++) {
                 if (c.distance[i] !== 0) {
                     return 1;
@@ -178,7 +178,7 @@ class Router {
 
     get_contact(id) {
         if(this.has_contact_id(id)) {
-            let index = this.contacts.map((c) => {return c.id}).indexOf(id);
+            const index = this.contacts.map((c) => {return c.id}).indexOf(id);
             return this.contacts[index];
         } else {
             return null;

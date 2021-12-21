@@ -2,10 +2,11 @@ const EventEmitter = require("events");
 
 const plexus = require("../index");
 
-let a = new plexus.Node();
+const a = new plexus.Node();
 
-let node_count = 50;
-let nodes = [];
+const pause = 1000;
+const node_count = 50;
+const nodes = [];
 
 console.log(`Running local selftest with ${node_count} nodes`);
 
@@ -27,13 +28,13 @@ while(nodes.length < node_count) {
 a.on("ready", () => {
     let connections = 0;
     let listening_nodes = 0;
-    let broadcast_data = "tes_message";
-    let broadcast_emitter = new EventEmitter();
+    const broadcast_data = "test_message";
+    const broadcast_emitter = new EventEmitter();
 
     for(let i = 0; i < nodes.length; i++) {
-        let node = nodes[i];
+        const node = nodes[i];
         
-        let status = a.connect({host: node.self.host, port: node.self.port});
+        const status = a.connect({host: node.self.host, port: node.self.port});
         status.on("response", async (message, {host, port}) => {
             connections++;
             node.on("broadcast", (data) => {
@@ -46,13 +47,13 @@ a.on("ready", () => {
             });
 
             if(connections >= nodes.length) {
-                let items = [
+                const items = [
                     a.store({key: "key", value: "value"}),
                     a.store({value: "hashed_value"})
                 ];
                 console.log(`Stored items`);
                 console.log(items);
-                await new Promise((resolve) => setTimeout(resolve, 2500));
+                await new Promise((resolve) => setTimeout(resolve, pause / 2));
 
                 //  Item lookup
                 console.log("");
@@ -65,10 +66,14 @@ a.on("ready", () => {
                 console.log("");console.log("=============================");
                 console.log("");
                 console.log("");
-                await new Promise((resolve) => setTimeout(resolve, 5000));
+                await new Promise((resolve) => setTimeout(resolve, pause));
                 console.log("Starting...");
+                let start = process.hrtime();
+
                 a.find({key: "key"}).on("found", async (result) => {
                     console.log(result);
+                    let end = process.hrtime(start);
+                    console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);
 
                     //  Node lookup
                     console.log("");
@@ -81,10 +86,14 @@ a.on("ready", () => {
                     console.log("");console.log("=============================");
                     console.log("");
                     console.log("");
-                    await new Promise((resolve) => setTimeout(resolve, 5000));
+                    await new Promise((resolve) => setTimeout(resolve, pause));
                     console.log("Starting...");
+                    start = process.hrtime();
+
                     a.find({key: result.publisher}).on("found", async (result) => {
                         console.log(result);
+                        end = process.hrtime(start);
+                        console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);
 
                         //  Broadcasting test
                         console.log("");
@@ -98,13 +107,15 @@ a.on("ready", () => {
                         console.log("");console.log("=============================");
                         console.log("");
                         console.log("");
-                        await new Promise((resolve) => setTimeout(resolve, 5000));
+                        await new Promise((resolve) => setTimeout(resolve, pause));
                         console.log("Starting...");
-
+                        start = process.hrtime();
                         
                         a.broadcast({data: broadcast_data});
                         broadcast_emitter.once("complete", async () => {
                             console.log(`${listening_nodes}/${nodes.length} nodes listening - (${parseFloat((listening_nodes / nodes.length) * 100).toFixed(2)}%)`);
+                            end = process.hrtime(start);
+                            console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);
                             
                             //  Non existent item lookup
                             console.log("");
@@ -119,13 +130,17 @@ a.on("ready", () => {
                             console.log("");console.log("=============================");
                             console.log("");
                             console.log("");
-                            await new Promise((resolve) => setTimeout(resolve, 5000));
+                            await new Promise((resolve) => setTimeout(resolve, pause));
                             console.log("Starting...");
+                            start = process.hrtime();
+                            
                             a.find({key: "notakey"}).on("timeout", async () => {
                                 console.log("timed out");
+                                end = process.hrtime(start);
+                                console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);
 
                                 console.log(`selftest done`);
-                                await new Promise((resolve) => setTimeout(resolve, 5000));
+                                await new Promise((resolve) => setTimeout(resolve, pause));
                                 process.exit(0);
                             });
                         });

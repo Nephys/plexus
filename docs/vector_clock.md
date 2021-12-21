@@ -26,7 +26,7 @@ The vector clock is useful when updating a remote node's [contact](contact.md) i
 const plexus = require("plexus");
 
 //  Creating a new Vector Clock
-let clock = new plexus.VectorClock();
+const clock = new plexus.VectorClock();
 ```
 
 # **Getters**
@@ -36,7 +36,7 @@ let clock = new plexus.VectorClock();
 \
 **Returns the current logical time of the node.**
 ```js
-let time = clock.time;
+const time = clock.time;
 console.log(time);  //  15
 ```
 

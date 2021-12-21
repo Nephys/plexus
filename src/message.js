@@ -21,8 +21,8 @@ class Message {
         this.jsonrpc = VERSION;
         this.id = id || this.create_id();
 
-        let specs = {id, method, params, result, error};
-        let type = this.message_type(specs);
+        const specs = {id, method, params, result, error};
+        const type = this.message_type(specs);
         
         if(type == MESSAGE_TYPES.REQUEST) {
             this.method = specs.method.toUpperCase();
@@ -51,10 +51,10 @@ class Message {
 
     //  Returns the type of the message (REQUEST, RESPONSE or UNKNOWN)
     message_type(specs) {
-        let is_request = !!(specs.method !== undefined && specs.params !== undefined);
-        let is_response = !!(specs.id && ((specs.result !== undefined) || specs.error));
+        const is_request = !!(specs.method !== undefined && specs.params !== undefined);
+        const is_response = !!(specs.id && ((specs.result !== undefined) || specs.error));
 
-        let type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
+        const type = is_request ? MESSAGE_TYPES.REQUEST : is_response ? MESSAGE_TYPES.RESPONSE : MESSAGE_TYPES.UNKNOWN;
         return type;
     }
 }

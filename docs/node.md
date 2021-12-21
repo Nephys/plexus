@@ -37,7 +37,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
 const plexus = require("plexus");
 
 //  Node creation
-let node = new plexus.Node({host: "127.0.0.1", port: 8080});
+const node = new plexus.Node({host: "127.0.0.1", port: 8080});
 ```
 
 # **Methods**
@@ -77,7 +77,7 @@ node.on("broadcast", (data) => {
 **Stores data on the Network.**
 ```js
 //  Storing data
-let item = node.store({key: key, value: value, republish: true});
+const item = node.store({key: key, value: value, republish: true});
 ```
 
 #### node.find({ key })
@@ -87,7 +87,7 @@ let item = node.store({key: key, value: value, republish: true});
 **Retrieving data on the Network.**
 ```js
 //  Retrieving data
-let lookup = node.find({key: key});
+const lookup = node.find({key: key});
 
 //  The item exists on the Network
 lookup.on("found", (result) => {
