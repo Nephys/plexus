@@ -22,11 +22,6 @@ node.rpc.on("ready", () => {
             console.log(`[${data.metadata.sender}]: ${data.metadata.text}`);
         }
     });
-
-    node.rpc.on("message", (message, {host, port}) => {
-        return;     // Ignore
-        console.log(util.inspect(node.router.buckets, {showHidden: true, colors: true}));
-    });
     
     console.log("please enter the <IP:PORT> of the remote peer");
     stdin.on("data", (data) => {

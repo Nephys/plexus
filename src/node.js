@@ -79,11 +79,17 @@ class Node extends EventEmitter {
         
         const contacts = this.router.contacts;
         contacts.map((c) => {
-            let request = new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}});
-            let handshake = this.rpc.send_message(request, {host: c.host, port: c.port});
+            const request = new Message({
+                method: "ping",
+                params: {
+                    id: this.self.id,
+                    time: this.self.clock.time
+                }
+            });
+            const handshake = this.rpc.send_message(request, {host: c.host, port: c.port});
 
             handshake.on("response", (message, {host, port}) => {
-                let contact = new Contact({
+                const contact = new Contact({
                     host: host,
                     port: port,
                     id: message.result.id,
@@ -126,13 +132,27 @@ class Node extends EventEmitter {
 
         const items = this.storage.get_republishable_items();
         for (let i = 0; i < items.length; i++){
-            const item = new Item({key: items[i].key, value: items[i].value, publisher: items[i].publisher, timestamp: Date.now()});
+            const item = new Item({
+                key: items[i].key,
+                value: items[i].value,
+                publisher: items[i].publisher,
+                timestamp: Date.now()
+            });
 
             if(items[i].publisher == this.self.id && Date.now() >= items[i].timestamp + republish) {
                 const contacts = this.router.get_contacts_near(items[i].key, this.router.peers, Buffer.from(this.self.id));
                 contacts.map((contact) => {
                     //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-                    const request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+                    const request = new Message({
+                        method: "store",
+                        params: {
+                            item: item,
+                            sender: {
+                                id: this.self.id,
+                                time: this.self.clock.time
+                            }
+                        }
+                    });
                     this.rpc.send_message(request, {host: contact.host, port: contact.port});
                 });
             }
@@ -145,13 +165,27 @@ class Node extends EventEmitter {
 
         const items = this.storage.get_items();
         for (let i = 0; i < items.length; i++){
-            const item = new Item({key: items[i].key, value: items[i].value, publisher: items[i].publisher, timestamp: Date.now()});
+            const item = new Item({
+                key: items[i].key,
+                value: items[i].value,
+                publisher: items[i].publisher,
+                timestamp: Date.now()
+            });
 
             if (items[i].publisher !== this.self.id) {
                 const contacts = this.router.get_contacts_near(items[i].key, this.router.peers, Buffer.from(this.self.id));
                 contacts.map((contact) => {
                     //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-                    const request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+                    const request = new Message({
+                        method: "store",
+                        params: {
+                            item: item,
+                            sender: {
+                                id: this.self.id,
+                                time: this.self.clock.time
+                            }
+                        }
+                    });
                     this.rpc.send_message(request, {host: contact.host, port: contact.port});
                 });
             }
@@ -168,6 +202,7 @@ class Node extends EventEmitter {
             {"STORE": this.on_store},
             {"CONTACTS": this.on_contacts},
             {"BROADCAST": this.on_broadcast},
+            {"MESSAGE": this.on_message}
         ];
 
         for (let i = 0; i < handlers.length; i++) {
@@ -193,7 +228,13 @@ class Node extends EventEmitter {
 
         this.router.update_contact(contact);
 
-        const response = new Message({result: {id: this.self.id, time: this.self.clock.time}, id: message.id});
+        const response = new Message({
+            result: {
+                id: this.self.id,
+                time: this.self.clock.time
+            },
+            id: message.id
+        });
         this.rpc.send_message(response, {host, port});
     }
 
@@ -208,21 +249,40 @@ class Node extends EventEmitter {
 
         //  Check if the key/node is locally stored
         if(this.router.has_contact_id(key)) {
-            const response = new Message({result: this.router.get_contact(key), id: message.id});
+            const response = new Message({
+                result: this.router.get_contact(key),
+                id: message.id
+            });
             this.rpc.send_message(response, {host, port});
         } else if(this.storage.has(key)) {
-            const response = new Message({result: this.storage.get(key), id: message.id});
+            const response = new Message({
+                result: this.storage.get(key),
+                id: message.id
+            });
             this.rpc.send_message(response, {host, port});
         } else {
             //  Get a list of the closest known contacts to the key
             const near = this.router.get_contacts_near(key, limit, sender);
             near.map((contact) => {
                 //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-                const request = new Message({method: "find", params: {key: key, limit: limit, sender: {id: this.self.id, time: this.self.clock.time}}});
+                const request = new Message({
+                    method: "find",
+                    params: {
+                        key: key,
+                        limit: limit,
+                        sender: {
+                            id: this.self.id,
+                            time: this.self.clock.time
+                        }
+                    }
+                });
                 const handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
             
                 handshake.on("response", (m, {h, p}) => {
-                    const response = new Message({result: m.result, id: message.id});
+                    const response = new Message({
+                        result: m.result,
+                        id: message.id
+                    });
                     this.rpc.send_message(response, {host, port});
                 });
             });
@@ -244,7 +304,10 @@ class Node extends EventEmitter {
         this.self.clock.update(params.sender.id);
 
         const contacts = this.router.contacts;
-        const response = new Message({result: contacts, id: message.id});
+        const response = new Message({
+            result: contacts,
+            id: message.id
+        });
         this.rpc.send_message(response, {host, port});
     }
 
@@ -279,6 +342,12 @@ class Node extends EventEmitter {
         }
     }
 
+    //  Respond to MESSAGE requests by emitting a message event
+    on_message(message, {host, port}) {
+        const params = message.params;
+        this.emit("message", params.message, params.sender);
+    }
+
 
     //  NODE
     //  Find an Item/Node on the network
@@ -291,7 +360,17 @@ class Node extends EventEmitter {
         const contacts = this.router.get_contacts_near(key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {
             //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-            const request = new Message({method: "find", params: {key: key, limit: this.router.peers, sender: {id: this.self.id, time: this.self.clock.time}}});
+            const request = new Message({
+                method: "find",
+                params: {
+                    key: key,
+                    limit: this.router.peers,
+                    sender: {
+                        id: this.self.id,
+                        time: this.self.clock.time
+                    }
+                }
+            });
             const handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
 
             handshake.on("response", (message, {host, port}) => {
@@ -324,13 +403,27 @@ class Node extends EventEmitter {
     store({key, value, republish = false}) {
         this.self.clock.update(this.self.id);
         
-        const item = new Item({key: key, value: value, publisher: this.self.id, timestamp: Date.now()});
+        const item = new Item({
+            key: key,
+            value: value,
+            publisher: this.self.id,
+            timestamp: Date.now()
+        });
         this.storage.set(item.key, item, republish);
         
         const contacts = this.router.get_contacts_near(item.key, this.router.peers, Buffer.from(this.self.id));
         contacts.map((contact) => {
             //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-            const request = new Message({method: "store", params: {item: item, sender: {id: this.self.id, time: this.self.clock.time}}});
+            const request = new Message({
+                method: "store",
+                params: {
+                    item: item,
+                    sender: {
+                        id: this.self.id,
+                        time: this.self.clock.time
+                    }
+                }
+            });
             this.rpc.send_message(request, {host: contact.host, port: contact.port});
         });
 
@@ -361,11 +454,35 @@ class Node extends EventEmitter {
         }
     }
 
+    // Message a specific node
+    message({message, id}) {
+        const request = new Message({
+            method: "message",
+            params: {
+                message,
+                sender: {
+                    id: this.self.id,
+                    time: this.self.clock.time
+                }
+            }
+        });
+
+        this.find({key: id}).on("found", (result) => {
+            this.rpc.send_message(request, result);
+        });
+    }
+
     //  Connect to another node
     connect({host, port}) {
         this.self.clock.update(this.self.id);
 
-        const request = new Message({method: "ping", params: {id: this.self.id, time: this.self.clock.time}});
+        const request = new Message({
+            method: "ping",
+            params: {
+                id: this.self.id,
+                time: this.self.clock.time
+            }
+        });
         const handshake = this.rpc.send_message(request, {host, port});
 
         handshake.on("response", (message, {host, port}) => {

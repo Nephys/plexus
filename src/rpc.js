@@ -132,7 +132,6 @@ class RPC extends EventEmitter {
             const spec = JSON.parse(bytes.toString());
             const message = new Message(spec);
 
-            this.emit("message", message, {host, port});
             if(this.message_type(message) == MESSAGE_TYPES.REQUEST) {
                 this.emit(message.method, message, {host, port});
             } else if(this.message_type(message) == MESSAGE_TYPES.RESPONSE && message.id) {

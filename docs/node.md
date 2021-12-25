@@ -9,6 +9,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
 * methods
     * [node.connect({ host, port })](#nodeconnect-host-port-)
     * [node.broadcast({ data })](#nodebroadcast-data-)
+    * [node.message({ message, id })](#nodemessage-message-id-)
     * [node.store({ key, value, republish })](#nodestore-key-value-republish-)
     * [node.find({ key })](#nodefind-key-)
 * events
@@ -68,6 +69,22 @@ node.on("broadcast", (data) => {
 });
 ```
 
+#### node.message({ message, id })
+* `message`: _Any_ The data to send to the remote node.
+* `id`: _String_ The ID of the remote node.
+
+\
+**Sends a message to a remote node.**
+```js
+//  Sendind to the remote node
+node.message({message: "message", id: "id"});
+
+//  Handling incoming Messages
+node.on("message", (message, sender) => {
+    console.log(message, sender);
+});
+```
+
 #### node.store({ key, value, republish })
 * `key`: _String_ _(Optional, Default: hash-of-value)_ The key used to find and store the value on the network.
 * `value`: _Object_ The value to store on the network.
@@ -109,6 +126,12 @@ Emitted when the local node is ready.
 * `data`: _Object_ The data broadcasted through the network.
 
 Emitted when another node issues a broadcast request to this node.
+
+#### Event 'message'
+* `message`: _Any_ The data received from a remote node.
+* `sender`: _Object_ The remote node's informations.
+
+Emitted when another node sends a message to this node.
 
 #### Event 'connected'
 * `contact`: [_Contact_](contact.md) The key used to find and store the value.

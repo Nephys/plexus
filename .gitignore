@@ -2,6 +2,9 @@
 notes.txt
 resources.txt
 
+# Private tests
+tests/dummy.js
+
 .vscode/
 
 # Old stuff, and random other things
