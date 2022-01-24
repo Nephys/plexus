@@ -243,50 +243,66 @@ class Node extends EventEmitter {
         const params = message.params;
         this.self.clock.update(params.sender.id);
 
-        const key = params.key;                                //  Buffer
+        const key = params.key;                                 //  Buffer
+        const type = params.type;
         const limit = this.router.peers;
-        const sender = Buffer.from(params.sender.id);         //  Buffer
+        const sender = Buffer.from(params.sender.id);           //  Buffer
 
         //  Check if the key/node is locally stored
-        if(this.router.has_contact_id(key)) {
-            const response = new Message({
-                result: this.router.get_contact(key),
-                id: message.id
-            });
-            this.rpc.send_message(response, {host, port});
-        } else if(this.storage.has(key)) {
-            const response = new Message({
-                result: this.storage.get(key),
-                id: message.id
-            });
-            this.rpc.send_message(response, {host, port});
-        } else {
-            //  Get a list of the closest known contacts to the key
-            const near = this.router.get_contacts_near(key, limit, sender);
-            near.map((contact) => {
-                //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
-                const request = new Message({
-                    method: "find",
-                    params: {
-                        key: key,
-                        limit: limit,
-                        sender: {
-                            id: this.self.id,
-                            time: this.self.clock.time
-                        }
-                    }
-                });
-                const handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
-            
-                handshake.on("response", (m, {h, p}) => {
+        switch (type.toLowerCase()) {
+            case "node":
+                if(this.router.has_contact_id(key)) {
                     const response = new Message({
-                        result: m.result,
+                        result: this.router.get_contact(key),
                         id: message.id
                     });
                     this.rpc.send_message(response, {host, port});
-                });
-            });
+                    return;
+                }
+                break;
+            
+            case "item":
+                if(this.storage.has(key)) {
+                    const response = new Message({
+                        result: this.storage.get(key),
+                        id: message.id
+                    });
+                    this.rpc.send_message(response, {host, port});
+                    return;
+                }
+                break;
+
+            default:
+                // Unknown type
+                break;
         }
+        
+        //  Get a list of the closest known contacts to the key
+        const near = this.router.get_contacts_near(key, limit, sender);
+        near.map((contact) => {
+            //  Create the request message once per contact to avoid message ID collision when/if awaiting a response
+            const request = new Message({
+                method: "find",
+                params: {
+                    key: key,
+                    type: type,
+                    limit: limit,
+                    sender: {
+                        id: this.self.id,
+                        time: this.self.clock.time
+                    }
+                }
+            });
+            const handshake = this.rpc.send_message(request, {host: contact.host, port: contact.port});
+        
+            handshake.on("response", (m, {h, p}) => {
+                const response = new Message({
+                    result: m.result,
+                    id: message.id
+                });
+                this.rpc.send_message(response, {host, port});
+            });
+        });
     }
 
     //  Respond to STORE requests by storing the specified item on the node
@@ -351,7 +367,7 @@ class Node extends EventEmitter {
 
     //  NODE
     //  Find an Item/Node on the network
-    find({key}) {
+    find({key, type}) {
         this.self.clock.update(this.self.id);
         const emitter = new EventEmitter();
 
@@ -364,6 +380,7 @@ class Node extends EventEmitter {
                 method: "find",
                 params: {
                     key: key,
+                    type: type,
                     limit: this.router.peers,
                     sender: {
                         id: this.self.id,

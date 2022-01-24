@@ -70,7 +70,7 @@ a.on("ready", () => {
                 console.log("Starting...");
                 let start = process.hrtime();
 
-                a.find({key: "key"}).on("found", async (result) => {
+                a.find({key: "key", type: "item"}).on("found", async (result) => {
                     console.log(result);
                     let end = process.hrtime(start);
                     console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);
@@ -90,7 +90,7 @@ a.on("ready", () => {
                     console.log("Starting...");
                     start = process.hrtime();
 
-                    a.find({key: result.publisher}).on("found", async (result) => {
+                    a.find({key: result.publisher, type: "node"}).on("found", async (result) => {
                         console.log(result);
                         end = process.hrtime(start);
                         console.log(`${end[0]}s ${parseFloat(end[1] / 1000000).toFixed(2)}ms`);

@@ -11,7 +11,7 @@ Nodes are the heart of the Plexus Network, they allow your application to connec
     * [node.broadcast({ data })](#nodebroadcast-data-)
     * [node.message({ message, id })](#nodemessage-message-id-)
     * [node.store({ key, value, republish })](#nodestore-key-value-republish-)
-    * [node.find({ key })](#nodefind-key-)
+    * [node.find({ key, type })](#nodefind-key-type-)
 * events
     * [Event 'ready'](#event-ready)
     * [Event 'broadcast'](#event-broadcast)
@@ -97,14 +97,15 @@ node.on("message", (message, sender) => {
 const item = node.store({key: key, value: value, republish: true});
 ```
 
-#### node.find({ key })
+#### node.find({ key, type })
 * `key`: _String_ The key used to find and store the value.
+* `type`: _String_ The type of item to find ("item", "node").
 
 \
 **Retrieving data on the Network.**
 ```js
 //  Retrieving data
-const lookup = node.find({key: key});
+const lookup = node.find({key: key, type: "node"});
 
 //  The item exists on the Network
 lookup.on("found", (result) => {
