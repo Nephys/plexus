@@ -139,7 +139,7 @@ node.on("broadcast", (data) => {
 
 If you like the project and want to support me you can do so by donating any amout to one of the following addresses or by using it in your own projects and sharing this repo.
 
-Tank you! ❤️
+Thank you! ❤️
 
 * ETH [0x882fc9954991eaaa4c8f2de9145e3135660a1680](https://etherscan.io/address/0x882fc9954991eaaa4c8f2de9145e3135660a1680)
 
